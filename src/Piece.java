@@ -6,7 +6,10 @@ abstract public class Piece {
     public Color getColor() {
         return color;
     }
+    public boolean hasSameColor(Piece other) {
+        return other != null && color == other.getColor();
+    }
 
-    abstract List<Position> getLegalMoves(Board board, Position position);
+    abstract List<Position> getValidTargets(Board board, Position position);
     abstract PieceType getPieceType();
 }
