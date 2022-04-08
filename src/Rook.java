@@ -8,7 +8,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    List<Position> getLegalMoves(Board board, Position position) {
-        return null;
+    List<Position> getValidTargets(Board board, Position position) {
+        return Target.getTargetsInCross(board, position, getColor());
     }
 }

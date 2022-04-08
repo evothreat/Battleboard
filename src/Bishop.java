@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Bishop extends Piece {
@@ -8,7 +10,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    List<Position> getLegalMoves(Board board, Position position) {
-        return null;
+    List<Position> getValidTargets(Board board, Position position) {
+        return Target.getTargetsInDiagonal(board, position, getColor());
     }
 }
