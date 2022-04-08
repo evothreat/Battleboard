@@ -1,22 +1,27 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Target {
 
     static List<Position> getTargetsInCross(Board board, Position position, int radius) {
-        List<Position> targets = new ArrayList<>(getTargetsInDirection(board, position, radius, 0, 1));
-        targets.addAll(getTargetsInDirection(board, position, radius, 1, 0));
-        targets.addAll(getTargetsInDirection(board, position, radius, 0, -1));
-        targets.addAll(getTargetsInDirection(board, position, radius, -1, 0));
-        return targets;
+        return Stream.of(
+                getTargetsInDirection(board, position, radius, 0, 1),
+                getTargetsInDirection(board, position, radius, 1, 0),
+                getTargetsInDirection(board, position, radius, 0, -1),
+                getTargetsInDirection(board, position, radius, -1, 0)
+        ).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     static List<Position> getTargetsInDiagonal(Board board, Position position, int radius) {
-        List<Position> targets = new ArrayList<>(getTargetsInDirection(board, position, radius, 1, 1));
-        targets.addAll(getTargetsInDirection(board, position, radius, 1, -1));
-        targets.addAll(getTargetsInDirection(board, position, radius, -1, -1));
-        targets.addAll(getTargetsInDirection(board, position, radius, -1, 1));
-        return targets;
+        return Stream.of(
+                getTargetsInDirection(board, position, radius, 1, 1),
+                getTargetsInDirection(board, position, radius, 1, -1),
+                getTargetsInDirection(board, position, radius, -1, -1),
+                getTargetsInDirection(board, position, radius, -1, 1)
+        ).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     static public List<Position> getTargetsInDirection(Board board, Position position, int radius, int dirX, int dirY) {
