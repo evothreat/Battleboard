@@ -37,38 +37,16 @@ public class Board {
         return color.isBlack() ? blackKingSquare : whiteKingSquare;
     }
 
-    public void setBlackKingSquare(Square blackKingSquare) {
-        this.blackKingSquare = blackKingSquare;
+    public void setBlackKingSquare(Square square) {
+        this.blackKingSquare = square;
     }
 
-    public void setWhiteKingSquare(Square whiteKingSquare) {
-        this.whiteKingSquare = whiteKingSquare;
-    }
-
-    public Piece getPieceAt(final int x, final int y) {
-        return 8 > x && y >= 0 ? state[x][y].getPiece() : null;
+    public void setWhiteKingSquare(Square square) {
+        this.whiteKingSquare = square;
     }
 
     public Square getSquareAt(final int x, final int y) {
         return 8 > x && y >= 0 ? state[x][y] : null;
-    }
-
-    public boolean isSettled(final int x, final int y) {
-        return 8 > x && y >= 0 && state[x][y].isSettled();
-    }
-
-    public void movePiece(final Position src, final Position dst) {
-        state[dst.getX()][dst.getY()].setPiece(state[src.getX()][src.getY()].getPiece());
-        state[src.getX()][src.getY()].setPiece(null);
-    }
-
-    // TODO: implement
-    public boolean inCheck(final Color color) {
-        return false;
-    }
-    // TODO: implement
-    public MateType inMate(final Color color) {
-        return MateType.NONE;
     }
 
     public List<Square> getValidTargets(final Color color) {
