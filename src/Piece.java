@@ -17,7 +17,10 @@ abstract public class Piece {
     }
 
     public boolean canAttackKing(Board board, Square square) {
-        return false;
+        List<Square> targets = getValidTargets(board, square);
+        return targets.stream().anyMatch(sq -> sq.isSettled() &&
+                                         sq.getPiece().getColor() != getColor() &&
+                                         sq.getPiece().getPieceType() == PieceType.KING);
     }
 
     public boolean canDefendKing(Board board, Square square) {
@@ -25,5 +28,6 @@ abstract public class Piece {
     }
 
     abstract List<Square> getValidTargets(Board board, Square square);
+
     abstract PieceType getPieceType();
 }
