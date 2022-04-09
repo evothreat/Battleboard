@@ -65,15 +65,15 @@ public class Board {
     }
 
     public List<Square> getValidTargets(final Color color) {
-        List<Square> moves = new ArrayList<>();
+        List<Square> targets = new ArrayList<>();
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Piece p = state[x][y].getPiece();
                 if (p != null && p.getColor() == color) {
-                    moves.addAll(p.getValidTargets(this, new Position(x, y))); // TODO: pass x and y instead of position
+                    targets.addAll(p.getValidTargets(this, new Position(x, y))); // TODO: pass x and y instead of position
                 }
             }
         }
-        return moves;
+        return targets;
     }
 }
