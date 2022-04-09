@@ -1,7 +1,12 @@
 import java.util.List;
 
 abstract public class Piece {
-    private Color color;
+
+    private final Color color;
+
+    public Piece(Color color) {
+        this.color = color;
+    }
 
     public Color getColor() {
         return color;
@@ -10,6 +15,6 @@ abstract public class Piece {
         return other != null && color == other.getColor();
     }
 
-    abstract List<Position> getValidTargets(Board board, Position position);
+    abstract List<Square> getValidTargets(Board board, Position position);
     abstract PieceType getPieceType();
 }

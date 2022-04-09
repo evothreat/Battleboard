@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public class Target {
 
-    static List<Position> getTargetsInCross(Board board, Position position, Color color) {
+    static List<Square> getTargetsInCross(Board board, Position position, Color color) {
         return Stream.of(
                 getTargetsInDirection(board, position, color, Direction.N),
                 getTargetsInDirection(board, position, color, Direction.S),
@@ -15,7 +15,7 @@ public class Target {
         ).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
-    static List<Position> getTargetsInDiagonal(Board board, Position position, Color color) {
+    static List<Square> getTargetsInDiagonal(Board board, Position position, Color color) {
         return Stream.of(
                 getTargetsInDirection(board, position, color, Direction.NE),
                 getTargetsInDirection(board, position, color, Direction.SE),
@@ -24,22 +24,23 @@ public class Target {
         ).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
-    static public List<Position> getTargetsInDirection(Board board, Position position, Color color, Direction direction) {
-        List<Position> targets = new ArrayList<>();
-        int currX = position.getX() + direction.getX();
-        int currY = position.getY() + direction.getY();
+    static public List<Square> getTargetsInDirection(Board board, Position position, Color color, Direction dir) {
+        List<Square> targets = new ArrayList<>();
+        int currX = position.getX() + dir.getX();
+        int currY = position.getY() + dir.getY();
         while (currX >= 0 && currX < 8 && currY >= 0 && currY < 8) {
-            targets.add(new Position(currX, currY));
+            Square sq = board.getSquareAt(currX, currY);
+            targets.add(sq);
             // our piece or enemy's piece in the way
-            if (board.getPieceAt(currX, currY) != null) {
+            if (sq.isSettled()) {
                 // if our piece, remove it
-                if (board.getPieceAt(currX, currY).getColor() == color) {
+                if (sq.getPiece().getColor() == color) {
                     targets.remove(targets.size()-1);
                 }
                 break;
             }
-            currX += direction.getX();
-            currY += direction.getY();
+            currX += dir.getX();
+            currY += dir.getY();
         }
         return targets;
     }
