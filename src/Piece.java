@@ -11,10 +11,19 @@ abstract public class Piece {
     public Color getColor() {
         return color;
     }
+
     public boolean hasSameColor(Piece other) {
         return other != null && color == other.getColor();
     }
 
-    abstract List<Square> getValidTargets(Board board, Position position);
+    public boolean canAttackKing(Board board, Square square) {
+        return false;
+    }
+
+    public boolean canDefendKing(Board board, Square square) {
+        return false;
+    }
+
+    abstract List<Square> getValidTargets(Board board, Square square);
     abstract PieceType getPieceType();
 }

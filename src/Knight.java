@@ -14,9 +14,9 @@ public class Knight extends Piece {
     }
 
     @Override
-    List<Square> getValidTargets(Board board, Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    List<Square> getValidTargets(Board board, Square square) {
+        int x = square.getX();
+        int y = square.getY();
         List<Square> targets = Arrays.asList(
                 board.getSquareAt(x - 1, y + 2),
                 board.getSquareAt(x + 1, y + 2),

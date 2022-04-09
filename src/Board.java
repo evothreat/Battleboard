@@ -10,22 +10,22 @@ public class Board {
         for (int x = 0; x < 8; x++) {
             Color side = x < 4 ? Color.BLACK : Color.WHITE;
             if (x == 0 || x == 7) {
-                state[x][0] = new Square(new Rook(side), new Position(x, 0));
-                state[x][1] = new Square(new Knight(side), new Position(x, 1));
-                state[x][2] = new Square(new Bishop(side), new Position(x, 2));
-                state[x][3] = new Square(new Queen(side), new Position(x, 3));
-                state[x][4] = new Square(new King(side), new Position(x, 4));
-                state[x][5] = new Square(new Bishop(side), new Position(x, 5));
-                state[x][6] = new Square(new Knight(side), new Position(x, 6));
-                state[x][7] = new Square(new Rook(side), new Position(x, 7));
+                state[x][0] = new Square(new Rook(side), x, 0);
+                state[x][1] = new Square(new Knight(side), x, 1);
+                state[x][2] = new Square(new Bishop(side), x, 2);
+                state[x][3] = new Square(new Queen(side), x, 3);
+                state[x][4] = new Square(new King(side), x, 4);
+                state[x][5] = new Square(new Bishop(side), x, 5);
+                state[x][6] = new Square(new Knight(side), x, 6);
+                state[x][7] = new Square(new Rook(side), x, 7);
                 continue;
             }
             for (int y = 0; y < 8; y++) {
                 if (x == 1 || x == 6) {
-                    state[x][y] = new Square(new Pawn(side), new Position(x, y));
+                    state[x][y] = new Square(new Pawn(side), x, y);
                     continue;
                 }
-                state[x][y] = new Square(null, new Position(x, y));
+                state[x][y] = new Square(null, x, y);
             }
         }
     }
@@ -68,9 +68,9 @@ public class Board {
         List<Square> targets = new ArrayList<>();
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                Piece p = state[x][y].getPiece();
-                if (p != null && p.getColor() == color) {
-                    targets.addAll(p.getValidTargets(this, new Position(x, y))); // TODO: pass x and y instead of position
+                Square sq = state[x][y];
+                if (sq.isSettled() && sq.getPiece().getColor() == color) {
+                    targets.addAll(sq.getPiece().getValidTargets(this, sq));
                 }
             }
         }

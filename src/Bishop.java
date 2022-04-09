@@ -14,7 +14,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    List<Square> getValidTargets(Board board, Position position) {
-        return Target.getTargetsInDiagonal(board, position, getColor());
+    List<Square> getValidTargets(Board board, Square square) {
+        return Target.getTargetsInDiagonal(board, square, getColor());
     }
 }

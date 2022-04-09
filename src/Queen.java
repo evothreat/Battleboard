@@ -14,9 +14,9 @@ public class Queen extends Piece {
     }
 
     @Override
-    List<Square> getValidTargets(Board board, Position position) {
-        List<Square> targets = Target.getTargetsInCross(board, position, getColor());
-        targets.addAll(Target.getTargetsInDiagonal(board, position, getColor()));
+    List<Square> getValidTargets(Board board, Square square) {
+        List<Square> targets = Target.getTargetsInCross(board, square, getColor());
+        targets.addAll(Target.getTargetsInDiagonal(board, square, getColor()));
         return targets;
     }
 }

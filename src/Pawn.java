@@ -15,10 +15,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    List<Square> getValidTargets(Board board, Position position) {
+    List<Square> getValidTargets(Board board, Square square) {
         List<Square> targets = new ArrayList<>();
-        int x = position.getX();
-        int y = position.getY();
+        int x = square.getX();
+        int y = square.getY();
         boolean w = getColor().isWhite();
         // index out of range not possible, cause pawn becomes queen
         Square sq1 = board.getSquareAt(w ? x-1 : x+1, y);

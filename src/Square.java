@@ -1,11 +1,13 @@
 public class Square {
 
     private Piece piece;
-    private final Position position;
+    private final int x;
+    private final int y;
 
-    public Square(Piece piece, Position position) {
+    public Square(Piece piece, int x, int y) {
         this.piece = piece;
-        this.position = position;
+        this.x = x;
+        this.y = y;
     }
 
     public Piece getPiece() {
@@ -16,8 +18,12 @@ public class Square {
         this.piece = piece;
     }
 
-    public Position getPosition() {
-        return position;
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public boolean isSettled() {

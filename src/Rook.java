@@ -12,7 +12,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    List<Square> getValidTargets(Board board, Position position) {
-        return Target.getTargetsInCross(board, position, getColor());
+    List<Square> getValidTargets(Board board, Square square) {
+        return Target.getTargetsInCross(board, square, getColor());
     }
 }
