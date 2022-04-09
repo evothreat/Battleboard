@@ -5,12 +5,7 @@ import java.util.List;
 public class King extends Piece {
 
     public King(Color color) {
-        super(color);
-    }
-
-    @Override
-    PieceType getPieceType() {
-        return PieceType.KING;
+        super(color, PieceType.KING);
     }
 
     @Override

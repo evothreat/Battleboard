@@ -6,12 +6,7 @@ import java.util.List;
 public class Pawn extends Piece {
 
     public Pawn(Color color) {
-        super(color);
-    }
-
-    @Override
-    PieceType getPieceType() {
-        return PieceType.PAWN;
+        super(color, PieceType.PAWN);
     }
 
     @Override

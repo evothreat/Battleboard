@@ -5,6 +5,9 @@ public class Board {
 
     private final Square[][] state;
 
+    private Square blackKingSquare;
+    private Square whiteKingSquare;
+
     public Board() {
         state = new Square[8][8];
         for (int x = 0; x < 8; x++) {
@@ -30,16 +33,20 @@ public class Board {
         }
     }
 
+    public Square getKingSquare(final Color color) {
+        return color.isBlack() ? blackKingSquare : whiteKingSquare;
+    }
+
+    public void setBlackKingSquare(Square blackKingSquare) {
+        this.blackKingSquare = blackKingSquare;
+    }
+
+    public void setWhiteKingSquare(Square whiteKingSquare) {
+        this.whiteKingSquare = whiteKingSquare;
+    }
+
     public Piece getPieceAt(final int x, final int y) {
         return 8 > x && y >= 0 ? state[x][y].getPiece() : null;
-    }
-
-    public Piece getPieceAt(final Position position) {
-            return getPieceAt(position.getX(), position.getY());
-    }
-
-    public void setPieceAt(final Position position, Piece piece) {
-        state[position.getX()][position.getY()].setPiece(piece);
     }
 
     public Square getSquareAt(final int x, final int y) {
@@ -66,9 +73,8 @@ public class Board {
 
     public List<Square> getValidTargets(final Color color) {
         List<Square> targets = new ArrayList<>();
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                Square sq = state[x][y];
+        for (int i = 0; i < 8; i++) {
+            for (Square sq : state[i]) {
                 if (sq.isSettled() && sq.getPiece().getColor() == color) {
                     targets.addAll(sq.getPiece().getValidTargets(this, sq));
                 }

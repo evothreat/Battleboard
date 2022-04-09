@@ -5,12 +5,7 @@ import java.util.List;
 public class Bishop extends Piece {
 
     public Bishop(Color color) {
-        super(color);
-    }
-
-    @Override
-    PieceType getPieceType() {
-        return PieceType.BISHOP;
+        super(color, PieceType.BISHOP);
     }
 
     @Override

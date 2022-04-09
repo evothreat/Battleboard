@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Square {
 
     private Piece piece;
@@ -28,5 +30,18 @@ public class Square {
 
     public boolean isSettled() {
         return piece != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Square square = (Square) o;
+        return x == square.x && y == square.y && piece.equals(square.piece);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(piece, x, y);
     }
 }
