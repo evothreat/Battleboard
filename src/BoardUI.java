@@ -11,21 +11,32 @@ public class BoardUI {
     static Color bSquareColor = Color.decode("#3f2a14");
     static Color wSquareColor = Color.decode("#C89D7C");
 
-    private final JPanel boardPanel;
     private final JLabel[][] boardSquares;
 
+    private final JPanel mainPanel;
+    private final JPanel centerPanel;
     private final JPanel southPanel;
     private final JPanel westPanel;
 
-    public BoardUI() {
-        boardPanel = new JPanel(new GridLayout(8, 8));
-        boardSquares = new JLabel[8][8];
 
+    public BoardUI() {
+        mainPanel = new JPanel(new BorderLayout());
+        centerPanel = new JPanel(new GridLayout(8, 8));
         southPanel = new JPanel(new GridLayout(0, 8));
         westPanel = new JPanel(new GridLayout(8, 0));
 
+        boardSquares = new JLabel[8][8];
+
         initLabels();
         initBoard();
+
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(southPanel, BorderLayout.SOUTH);
+        mainPanel.add(westPanel, BorderLayout.WEST);
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 
     private void initLabels() {
@@ -69,7 +80,7 @@ public class BoardUI {
                     boardSquares[x][y] = new JLabel(new ImageIcon("resources/"+c+"p.png"));
                     continue;
                 }
-                boardSquares[x][y] = new JLabel();  // add whitespace string?
+                boardSquares[x][y] = new JLabel();
             }
         }
         for (int x = 0; x < 8; x++) {
@@ -82,20 +93,8 @@ public class BoardUI {
                 } else {
                     lab.setBackground(wSquareColor);
                 }
-                boardPanel.add(lab);
+                centerPanel.add(lab);
             }
         }
-    }
-
-    public JPanel getBoardPanel() {
-        return boardPanel;
-    }
-
-    public JPanel getSouthPanel() {
-        return southPanel;
-    }
-
-    public JPanel getWestPanel() {
-        return westPanel;
     }
 }
