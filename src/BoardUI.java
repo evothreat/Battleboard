@@ -35,10 +35,6 @@ public class BoardUI {
         mainPanel.add(westPanel, BorderLayout.WEST);
     }
 
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
-
     private void initLabels() {
         String[] chars = new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
         String[] digs = new String[]{"8", "7", "6", "5", "4", "3", "2", "1"};
@@ -96,5 +92,9 @@ public class BoardUI {
                 centerPanel.add(lab);
             }
         }
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 }
