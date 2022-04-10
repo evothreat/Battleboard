@@ -12,16 +12,15 @@ public class Knight extends Piece {
     List<Square> getValidTargets(Board board, Square square) {
         int x = square.getX();
         int y = square.getY();
-        List<Square> targets = Arrays.asList(
-                board.getSquareAt(x - 1, y + 2),
-                board.getSquareAt(x + 1, y + 2),
-                board.getSquareAt(x + 2, y + 1),
-                board.getSquareAt(x + 2, y - 1),
-                board.getSquareAt(x + 1, y - 2),
-                board.getSquareAt(x - 1, y - 2),
-                board.getSquareAt(x - 2, y - 1),
-                board.getSquareAt(x - 2, y + 1)
-        );
+        List<Square> targets = new ArrayList<>();
+        targets.add(board.getSquareAt(x - 1, y + 2));
+        targets.add(board.getSquareAt(x + 1, y + 2));
+        targets.add(board.getSquareAt(x + 2, y + 1));
+        targets.add(board.getSquareAt(x + 2, y - 1));
+        targets.add(board.getSquareAt(x + 1, y - 2));
+        targets.add(board.getSquareAt(x - 1, y - 2));
+        targets.add(board.getSquareAt(x - 2, y - 1));
+        targets.add(board.getSquareAt(x - 2, y + 1));
         targets.removeIf(sq -> sq == null || sq.isSettled() && hasSameColor(sq.getPiece()));
         return targets;
     }

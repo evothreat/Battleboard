@@ -12,16 +12,16 @@ public class King extends Piece {
     List<Square> getValidTargets(Board board, Square square) {
         int x = square.getX();
         int y = square.getY();
-        List<Square> targets = Arrays.asList(
-                board.getSquareAt(x - 1, y + 1),
-                board.getSquareAt(x, y + 1),
-                board.getSquareAt(x + 1, y + 1),
-                board.getSquareAt(x + 1, y),
-                board.getSquareAt(x + 1, y - 1),
-                board.getSquareAt(x, y - 1),
-                board.getSquareAt(x - 1, y - 1),
-                board.getSquareAt(x - 1, y)
-        );
+        List<Square> targets = new ArrayList<>();
+        targets.add(board.getSquareAt(x - 1, y + 1));
+        targets.add(board.getSquareAt(x, y + 1));
+        targets.add(board.getSquareAt(x + 1, y + 1));
+        targets.add(board.getSquareAt(x + 1, y));
+        targets.add(board.getSquareAt(x + 1, y - 1));
+        targets.add(board.getSquareAt(x, y - 1));
+        targets.add(board.getSquareAt(x - 1, y - 1));
+        targets.add(board.getSquareAt(x - 1, y));
+
         // retrieve enemyTargets after null & sameColor check?
         List<Square> enemyTargets = board.getValidTargets(getColor().toggle());
         targets.removeIf(sq -> sq == null || sq.isSettled() && hasSameColor(sq.getPiece()) || enemyTargets.contains(sq));

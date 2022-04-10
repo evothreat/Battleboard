@@ -1,15 +1,20 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.Color;
+import java.util.List;
 
 public class BoardUI {
 
     static Color labelBgColor = Color.decode("#3f2a14");
     static Color labelFgColor = Color.decode("#FFFFFF");
 
-    static Color bSquareColor = Color.decode("#3f2a14");
-    static Color wSquareColor = Color.decode("#C89D7C");
+    static Color blackSqColor = Color.decode("#3f2a14");
+    static Color whiteSqColor = Color.decode("#C89D7C");
+
+    static Color selectedSqColor = Color.decode("#FFC300");
+    static Color highlightedSqColor = Color.decode("#FFF7bb");
 
     private final JLabel[][] boardSquares;
 
@@ -83,11 +88,14 @@ public class BoardUI {
             for (int y = 0; y < 8; y++) {
                 JLabel lab = boardSquares[x][y];
                 lab.setOpaque(true);
+                lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
                 if ((x + y) % 2 == 0) {
-                    lab.setBackground(bSquareColor);
+                    lab.setBackground(blackSqColor);
+                    lab.setName("b");
                 } else {
-                    lab.setBackground(wSquareColor);
+                    lab.setBackground(whiteSqColor);
+                    lab.setName("w");
                 }
                 centerPanel.add(lab);
             }
@@ -96,5 +104,28 @@ public class BoardUI {
 
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public void selectPiece(Square square, List<Square> targets) {
+        JLabel sq = boardSquares[square.getX()][square.getY()];
+        sq.setBackground(selectedSqColor);
+        targets.forEach(s -> boardSquares[s.getX()][s.getY()].setBackground(highlightedSqColor));
+    }
+
+    public void deselectPiece(Square square, List<Square> targets) {
+        JLabel sq = boardSquares[square.getX()][square.getY()];
+        sq.setBackground(sq.getName().equals("w") ? whiteSqColor : blackSqColor);
+        for (Square t : targets) {
+            JLabel ts = boardSquares[t.getX()][t.getY()];
+            ts.setBackground(ts.getName().equals("w") ? whiteSqColor : blackSqColor);
+        }
+    }
+
+    public void movePiece(Square src, Square dst) {
+
     }
 }

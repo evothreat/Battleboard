@@ -25,11 +25,11 @@ public class Pawn extends Piece {
             targets.add(sq2);
         }
         Square sq3 = board.getSquareAt(x-1, w ? y+1 : y-1);
-        if (sq3.isSettled() && !hasSameColor(sq3.getPiece())) {
+        if (sq3 != null && sq3.isSettled() && !hasSameColor(sq3.getPiece())) {
             targets.add(sq3);
         }
         Square sq4 = board.getSquareAt(w ? x-1 : x+1, y+1);
-        if (sq4.isSettled() && !hasSameColor(sq1.getPiece())) {
+        if (sq4 != null && sq4.isSettled() && !hasSameColor(sq1.getPiece())) {
             targets.add(sq4);
         }
         return targets;

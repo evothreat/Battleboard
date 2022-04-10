@@ -46,15 +46,17 @@ public class Board {
     }
 
     public Square getSquareAt(final int x, final int y) {
-        return 8 > x && y >= 0 ? state[x][y] : null;
+        return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
     public List<Square> getValidTargets(final Color color) {
         List<Square> targets = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             for (Square sq : state[i]) {
-                if (sq.isSettled() && sq.getPiece().getColor() == color) {
-                    targets.addAll(sq.getPiece().getValidTargets(this, sq));
+                Piece piece = sq.getPiece();
+                // NOTE: king is excluded! If king is in near of other king, they will not see each other
+                if (sq.isSettled() && piece.getColor() == color && !piece.getPieceType().isKing()) {
+                    targets.addAll(piece.getValidTargets(this, sq));
                 }
             }
         }
