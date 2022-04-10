@@ -51,7 +51,7 @@ public class Game {
         if (sq.isSettled() && sq.getPiece().getColor() == player.getColor()) {
             pieceTargets = sq.getPiece().getValidTargets(board, sq);
             selectedPiece = sq;
-            System.out.println("Selected:" + selectedPiece + "\nTargets: " + pieceTargets + "\n\n");
+            //System.out.println("Selected:" + selectedPiece + "\nTargets: " + pieceTargets + "\n\n");
             boardUI.selectPiece(sq, pieceTargets);
             // compute legal moves and highlight them
         }

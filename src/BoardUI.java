@@ -11,10 +11,10 @@ public class BoardUI {
     static Color labelFgColor = Color.decode("#FFFFFF");
 
     static Color blackSqColor = Color.decode("#3f2a14");
-    static Color whiteSqColor = Color.decode("#C89D7C");
+    static Color whiteSqColor = Color.decode("#D2B48C");
 
-    static Color selectedSqColor = Color.decode("#FFC300");
-    static Color highlightedSqColor = Color.decode("#FFF7bb");
+    static Color selectedSqColor = Color.decode("#8B4513");
+    static Color highlightedSqColor = Color.decode("#E5AA70");
 
     private final JLabel[][] boardSquares;
 
