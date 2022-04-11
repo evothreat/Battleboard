@@ -1,19 +1,28 @@
 import java.sql.Time;
 
 public class Move {
-    final private Player player;
-    final private Board board;
-    final private Time begin;
 
     final private Square src;
     final private Square dst;
 
-    public Move(Player player, Board board, Time begin, Square src, Square dst) {
-        this.player = player;
-        this.board = board;
-        this.begin = begin;
-
+    public Move(Square src, Square dst) {
         this.src = src;
         this.dst = dst;
+    }
+
+    public Square getSrc() {
+        return src;
+    }
+
+    public Square getDst() {
+        return dst;
+    }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "src=" + src +
+                ", dst=" + dst +
+                '}';
     }
 }

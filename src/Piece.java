@@ -31,7 +31,7 @@ abstract public class Piece {
         if (ownTargets.contains(enemySquare)) {
             return true;
         }
-        if (enemySquare.getPiece().getPieceType().isKnight()) {
+        if (enemySquare.getPiece().isKnight()) {
             return false;
         }
         Square kingSquare = board.getKingSquare(color);
@@ -39,6 +39,30 @@ abstract public class Piece {
                                                          kingSquare.getX(), kingSquare.getY());
         List<Square> kingDirTargets = Target.getTargetsInDirection(board, enemySquare, color.toggle(), enemyToKingDir);
         return kingDirTargets.stream().anyMatch(ownTargets::contains);
+    }
+
+    public boolean isKing() {
+        return pieceType == PieceType.KING;
+    }
+
+    public boolean isQueen() {
+        return pieceType == PieceType.QUEEN;
+    }
+
+    public boolean isBishop() {
+        return pieceType == PieceType.BISHOP;
+    }
+
+    public boolean isKnight() {
+        return pieceType == PieceType.KNIGHT;
+    }
+
+    public boolean isRook() {
+        return pieceType == PieceType.ROOK;
+    }
+
+    public boolean isPawn() {
+        return pieceType == PieceType.PAWN;
     }
 
     abstract List<Square> getValidTargets(Board board, Square square);

@@ -53,18 +53,4 @@ public class Board {
         dst.setPiece(src.getPiece());
         src.setPiece(null);
     }
-
-    public List<Square> getValidTargets(final Color color) {
-        List<Square> targets = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            for (Square sq : state[i]) {
-                Piece piece = sq.getPiece();
-                // NOTE: king is excluded! If king is in near of other king, they will not see each other
-                if (sq.isSettled() && piece.getColor() == color && !piece.getPieceType().isKing()) {
-                    targets.addAll(piece.getValidTargets(this, sq));
-                }
-            }
-        }
-        return targets;
-    }
 }
