@@ -42,7 +42,11 @@ public class Game {
     }
 
     public void handleClickOnSquare(int x, int y) {
-        Square sq = board.getSquareAt(x, y);
+        int nx = x;
+        if (player.getColor().isBlack()) {
+            nx = 7 - x;
+        }
+        Square sq = board.getSquareAt(nx, y);
         // if piece already selected
         if (selectedPiece != null) {
             // if new selected piece is a target of old piece

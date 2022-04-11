@@ -24,7 +24,7 @@ public class BoardUI {
     private final JPanel westPanel;
 
 
-    public BoardUI() {
+    public BoardUI(boolean playerIsBlack) {
         mainPanel = new JPanel(new BorderLayout());
         centerPanel = new JPanel(new GridLayout(8, 8));
         southPanel = new JPanel(new GridLayout(0, 8));
@@ -33,7 +33,7 @@ public class BoardUI {
         boardSquares = new JLabel[8][8];
 
         initLabels();
-        initBoard();
+        initBoard(playerIsBlack);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
@@ -62,7 +62,7 @@ public class BoardUI {
         }
     }
 
-    private void initBoard() {
+    private void initBoard(boolean playerIsBlack) {
         for (int x = 0; x < 8; x++) {
             String c = x < 4 ? "b" : "w";
             if (x == 0 || x == 7) {
@@ -86,16 +86,18 @@ public class BoardUI {
         }
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                JLabel lab = boardSquares[x][y];
+                int nx = playerIsBlack ? 7-x : x;                         // maybe optimize in future
+
+                JLabel lab = boardSquares[nx][y];
                 lab.setOpaque(true);
                 lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                if ((x + y) % 2 == 0) {
-                    lab.setBackground(blackSqColor);
-                    lab.setName("b");
-                } else {
+                if ((nx + y) % 2 == 0) {
                     lab.setBackground(whiteSqColor);
                     lab.setName("w");
+                } else {
+                    lab.setBackground(blackSqColor);
+                    lab.setName("b");
                 }
                 centerPanel.add(lab);
             }

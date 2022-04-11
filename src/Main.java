@@ -4,8 +4,9 @@ import java.awt.*;
 public class Main {
 
     public static void main(String[] args){
-        BoardUI boardUI = new BoardUI();
-        Game game = new Game(new Board(), boardUI, new Player(Color.WHITE), null);
+        Player player = new Player(Color.WHITE);
+        BoardUI boardUI = new BoardUI(player.getColor().isBlack());
+        Game game = new Game(new Board(), boardUI, player, null);
         game.start();
 
         JFrame window = new JFrame("Chess");
