@@ -87,7 +87,6 @@ public class BoardUI {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 int nx = playerIsBlack ? 7-x : x;                         // maybe optimize in future
-
                 JLabel lab = boardSquares[nx][y];
                 lab.setOpaque(true);
                 lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
