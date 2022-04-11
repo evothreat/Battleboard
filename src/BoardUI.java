@@ -81,7 +81,7 @@ public class BoardUI {
                     boardSquares[x][y] = new JLabel(new ImageIcon("resources/"+c+"p.png"));
                     continue;
                 }
-                boardSquares[x][y] = new JLabel();
+                boardSquares[x][y] = new JLabel("", SwingConstants.CENTER);
             }
         }
         for (int x = 0; x < 8; x++) {
@@ -126,6 +126,8 @@ public class BoardUI {
     }
 
     public void movePiece(Square src, Square dst) {
-
+        JLabel srcSq = boardSquares[src.getX()][src.getY()];
+        boardSquares[dst.getX()][dst.getY()].setIcon(srcSq.getIcon());
+        srcSq.setIcon(null);
     }
 }

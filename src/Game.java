@@ -42,12 +42,19 @@ public class Game {
     }
 
     public void handleClickOnSquare(int x, int y) {
-        if (selectedPiece != null) {
-            boardUI.deselectPiece(selectedPiece, pieceTargets);
-            selectedPiece = null;
-            pieceTargets = null;
-        }
         Square sq = board.getSquareAt(x, y);
+        // if piece already selected
+        if (selectedPiece != null) {
+            // if new selected piece is a target of old piece
+            if (pieceTargets.contains(sq)) {
+                // move it and clear selection vars
+                board.movePiece(selectedPiece, sq);
+                boardUI.movePiece(selectedPiece, sq);
+                clearSelection();
+                return;
+            }
+            clearSelection();
+        }
         if (sq.isSettled() && sq.getPiece().getColor() == player.getColor()) {
             pieceTargets = sq.getPiece().getValidTargets(board, sq);
             selectedPiece = sq;
@@ -55,5 +62,11 @@ public class Game {
             boardUI.selectPiece(sq, pieceTargets);
             // compute legal moves and highlight them
         }
+    }
+
+    private void clearSelection() {
+        boardUI.deselectPiece(selectedPiece, pieceTargets);
+        selectedPiece = null;
+        pieceTargets = null;
     }
 }

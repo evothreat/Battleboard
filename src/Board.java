@@ -49,6 +49,11 @@ public class Board {
         return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
+    public void movePiece(Square src, Square dst) {
+        dst.setPiece(src.getPiece());
+        src.setPiece(null);
+    }
+
     public List<Square> getValidTargets(final Color color) {
         List<Square> targets = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
