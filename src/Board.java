@@ -53,4 +53,10 @@ public class Board {
         dst.setPiece(src.getPiece());
         src.setPiece(null);
     }
+
+    public void swapPieces(Square src, Square dst) {
+        Piece srcPiece = src.getPiece();
+        src.setPiece(dst.getPiece());
+        dst.setPiece(srcPiece);
+    }
 }

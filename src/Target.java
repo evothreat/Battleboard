@@ -45,3 +45,20 @@ public class Target {
         return targets;
     }
 }
+
+
+/*
+    static public Square getNextPieceSqInDirection(Board board, Square square, Direction dir) {
+        int currX = square.getX() + dir.getX();
+        int currY = square.getY() + dir.getY();
+        while (currX >= 0 && currX < 8 && currY >= 0 && currY < 8) {
+            Square sq = board.getSquareAt(currX, currY);
+            if (sq.isSettled()) {
+                return sq;
+            }
+            currX += dir.getX();
+            currY += dir.getY();
+        }
+        return null;
+    }
+*/

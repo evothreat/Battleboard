@@ -5,6 +5,9 @@ abstract public class Piece {
     private final Color color;
     private final PieceType pieceType;
 
+    // needed only for king & rook...
+    private boolean hasMoved;
+
     public Piece(Color color, PieceType pieceType) {
         this.color = color;
         this.pieceType = pieceType;
@@ -14,12 +17,20 @@ abstract public class Piece {
         return color;
     }
 
-    public boolean hasSameColor(Piece other) {
-        return other != null && color == other.getColor();
-    }
-
     public PieceType getPieceType() {
         return pieceType;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
+    public boolean hasSameColor(Piece other) {
+        return other != null && color == other.getColor();
     }
 
     public boolean canAttackKing(Board board, Square square) {

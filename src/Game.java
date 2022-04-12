@@ -42,26 +42,38 @@ public class Game {
     }
 
     public void handleClickOnSquare(int x, int y) {
-        Square sq = board.getSquareAt(player.getColor().isBlack() ? 7-x : x, y);
-        // if piece already selected
+        Square dstSq = board.getSquareAt(player.getColor().isBlack() ? 7-x : x, y);
         if (selectedPiece != null) {
-            // if new selected piece is a target of old piece
-            if (pieceTargets.contains(sq)) {
-                // move it and clear selection vars
-                board.movePiece(selectedPiece, sq);
-                boardUI.movePiece(selectedPiece, sq);
-                clearSelection();
+            if (pieceTargets.contains(dstSq)) {
+                movePiece(selectedPiece, dstSq);
                 return;
             }
             clearSelection();
         }
-        if (sq.isSettled() && sq.getPiece().getColor() == player.getColor()) {
-            pieceTargets = sq.getPiece().getValidTargets(board, sq);
-            selectedPiece = sq;
-            //System.out.println("Selected:" + selectedPiece + "\nTargets: " + pieceTargets + "\n\n");
-            boardUI.selectPiece(sq, pieceTargets);
-            // compute legal moves and highlight them
+        if (dstSq.isSettled() && dstSq.getPiece().getColor() == player.getColor()) {
+            selectPiece(dstSq);
         }
+    }
+
+    private void selectPiece(Square square) {
+        pieceTargets = square.getPiece().getValidTargets(board, square);
+        selectedPiece = square;
+        boardUI.selectPiece(square, pieceTargets);
+    }
+
+    private void movePiece(Square src, Square dst) {
+        if (!src.getPiece().hasMoved()) {
+            src.getPiece().setHasMoved(true);
+        }
+        if (src.getPiece().hasSameColor(dst.getPiece())) {
+            ((King) src.getPiece()).setDidCastling(true);
+            board.swapPieces(src, dst);
+            boardUI.swapPieces(src, dst);
+        } else {
+            board.movePiece(src, dst);
+            boardUI.movePiece(src, dst);
+        }
+        clearSelection();
     }
 
     private void clearSelection() {

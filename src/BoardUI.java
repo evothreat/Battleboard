@@ -131,4 +131,12 @@ public class BoardUI {
         boardSquares[dst.getX()][dst.getY()].setIcon(srcSq.getIcon());
         srcSq.setIcon(null);
     }
+
+    public void swapPieces(Square src, Square dst) {
+        JLabel srcSq = boardSquares[src.getX()][src.getY()];
+        JLabel dstSq = boardSquares[dst.getX()][dst.getY()];
+        Icon srcIcon = srcSq.getIcon();
+        srcSq.setIcon(dstSq.getIcon());
+        dstSq.setIcon(srcIcon);
+    }
 }
