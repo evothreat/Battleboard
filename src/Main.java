@@ -3,10 +3,25 @@ import java.awt.*;
 
 public class Main {
 
+    static Integer[][] testBoard = {
+            {-6, -5, -4, -3, -2, -3, -4, -5},
+            {0, 0, -1, -1, 0, -1, -1, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {1, 1, 1, 0, 1, 1, 1, 0},
+            {2, 3, 4, 5, 6, 2, 3, 4}
+    };
+
     public static void main(String[] args){
         Player player = new Player(Color.WHITE);
-        BoardUI boardUI = new BoardUI(player.getColor().isBlack());
-        Game game = new Game(new Board(), boardUI, player, null);
+
+        Board board = new Board(testBoard);
+
+        BoardUI boardUI = new BoardUI();
+
+        Game game = new Game(board, boardUI, player, null);
         game.start();
 
         JFrame window = new JFrame("Chess");

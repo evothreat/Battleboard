@@ -1,15 +1,37 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Board {
+
+    static final Map<Integer, Piece> PIECE_MAP  = new HashMap<>() {{
+        put(-6, new King(Color.BLACK));
+        put(-5, new Queen(Color.BLACK));
+        put(-4, new Rook(Color.BLACK));
+        put(-3, new Bishop(Color.BLACK));
+        put(-2, new Knight(Color.BLACK));
+        put(-1, new Pawn(Color.BLACK));
+        put(0, null);
+        put(6, new King(Color.WHITE));
+        put(5, new Queen(Color.WHITE));
+        put(4, new Rook(Color.WHITE));
+        put(3, new Bishop(Color.WHITE));
+        put(2, new Knight(Color.WHITE));
+        put(1, new Pawn(Color.WHITE));
+    }};
 
     private final Square[][] state;
 
     private Square blackKingSquare;
     private Square whiteKingSquare;
 
-    public Board() {
+    public Board(Integer[][] newState) {
         state = new Square[8][8];
+        if (newState != null) {
+            setState(newState);
+            return;
+        }
         for (int x = 0; x < 8; x++) {
             Color side = x < 4 ? Color.BLACK : Color.WHITE;
             if (x == 0 || x == 7) {
@@ -58,5 +80,13 @@ public class Board {
         Piece srcPiece = src.getPiece();
         src.setPiece(dst.getPiece());
         dst.setPiece(srcPiece);
+    }
+
+    public void setState(Integer[][] newState) {
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                state[x][y] = new Square(PIECE_MAP.get(newState[x][y]), x, y);
+            }
+        }
     }
 }

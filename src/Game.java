@@ -28,6 +28,7 @@ public class Game {
     }
 
     public void start() {
+        boardUI.init(board, player.getColor().isBlack());
         boardUI.getCenterPanel().addMouseListener(
                 new MouseAdapter() {
                     @Override

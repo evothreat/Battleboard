@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.Color;
 import java.util.List;
@@ -24,23 +23,25 @@ public class BoardUI {
     private final JPanel westPanel;
 
 
-    public BoardUI(boolean playerIsBlack) {
+    public BoardUI() {
         mainPanel = new JPanel(new BorderLayout());
         centerPanel = new JPanel(new GridLayout(8, 8));
         southPanel = new JPanel(new GridLayout(0, 8));
         westPanel = new JPanel(new GridLayout(8, 0));
 
         boardSquares = new JLabel[8][8];
+    }
 
-        initLabels();
-        initBoard(playerIsBlack);
+    public void init(Board board, boolean playerIsBlack) {
+        drawLabels();
+        drawBoard(board, playerIsBlack);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
         mainPanel.add(westPanel, BorderLayout.WEST);
     }
 
-    private void initLabels() {
+    private void drawLabels() {
         String[] chars = new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
         String[] digs = new String[]{"8", "7", "6", "5", "4", "3", "2", "1"};
 
@@ -59,47 +60,6 @@ public class BoardUI {
 
             southPanel.add(ch);
             westPanel.add(dig);
-        }
-    }
-
-    private void initBoard(boolean playerIsBlack) {
-        for (int x = 0; x < 8; x++) {
-            String c = x < 4 ? "b" : "w";
-            if (x == 0 || x == 7) {
-                boardSquares[x][0] = new JLabel(new ImageIcon("resources/"+c+"r.png"));
-                boardSquares[x][1] = new JLabel(new ImageIcon("resources/"+c+"n.png"));
-                boardSquares[x][2] = new JLabel(new ImageIcon("resources/"+c+"b.png"));
-                boardSquares[x][3] = new JLabel(new ImageIcon("resources/"+c+"q.png"));
-                boardSquares[x][4] = new JLabel(new ImageIcon("resources/"+c+"k.png"));
-                boardSquares[x][5] = new JLabel(new ImageIcon("resources/"+c+"b.png"));
-                boardSquares[x][6] = new JLabel(new ImageIcon("resources/"+c+"n.png"));
-                boardSquares[x][7] = new JLabel(new ImageIcon("resources/"+c+"r.png"));
-                continue;
-            }
-            for (int y = 0; y < 8; y++) {
-                if (x == 1 || x == 6) {
-                    boardSquares[x][y] = new JLabel(new ImageIcon("resources/"+c+"p.png"));
-                    continue;
-                }
-                boardSquares[x][y] = new JLabel("", SwingConstants.CENTER);
-            }
-        }
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                int nx = playerIsBlack ? 7-x : x;                         // maybe optimize in future
-                JLabel lab = boardSquares[nx][y];
-                lab.setOpaque(true);
-                lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-                if ((nx + y) % 2 == 0) {
-                    lab.setBackground(whiteSqColor);
-                    lab.setName("w");
-                } else {
-                    lab.setBackground(blackSqColor);
-                    lab.setName("b");
-                }
-                centerPanel.add(lab);
-            }
         }
     }
 
@@ -138,5 +98,57 @@ public class BoardUI {
         Icon srcIcon = srcSq.getIcon();
         srcSq.setIcon(dstSq.getIcon());
         dstSq.setIcon(srcIcon);
+    }
+
+    private void drawBoard(Board board, boolean playerIsBlack) {
+        // draw pieces
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Piece piece = board.getSquareAt(x, y).getPiece();
+                JLabel label = new JLabel("", SwingConstants.CENTER);
+                if (piece != null) {
+                    String color = piece.getColor().isWhite() ? "w" : "b";
+                    switch (piece.getPieceType()) {
+                        case KING:
+                            label.setIcon(new ImageIcon("resources/" + color + "k.png"));
+                            break;
+                        case QUEEN:
+                            label.setIcon(new ImageIcon("resources/" + color + "q.png"));
+                            break;
+                        case ROOK:
+                            label.setIcon(new ImageIcon("resources/" + color + "r.png"));
+                            break;
+                        case BISHOP:
+                            label.setIcon(new ImageIcon("resources/" + color + "b.png"));
+                            break;
+                        case KNIGHT:
+                            label.setIcon(new ImageIcon("resources/" + color + "n.png"));
+                            break;
+                        case PAWN:
+                            label.setIcon(new ImageIcon("resources/" + color + "p.png"));
+                            break;
+                    }
+                }
+                boardSquares[x][y] = label;
+            }
+        }
+        // draw squares
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                int z = playerIsBlack ? 7 - x : x;
+                JLabel lab = boardSquares[z][y];
+                lab.setOpaque(true);
+                lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+                if ((z + y) % 2 == 0) {
+                    lab.setBackground(whiteSqColor);
+                    lab.setName("w");
+                } else {
+                    lab.setBackground(blackSqColor);
+                    lab.setName("b");
+                }
+                centerPanel.add(lab);
+            }
+        }
     }
 }
