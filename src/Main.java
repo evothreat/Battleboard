@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 
 public class Main {
 
@@ -15,7 +14,7 @@ public class Main {
     };
 
     public static void main(String[] args){
-        Player player = new Player(Color.BLACK);
+        Player player = new Player(Colour.BLACK);
 
         Board board = new Board(null);
 

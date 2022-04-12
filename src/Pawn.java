@@ -5,7 +5,7 @@ import java.util.List;
 // after move check whether pawn became queen!
 public class Pawn extends Piece {
 
-    public Pawn(Color color) {
+    public Pawn(Colour color) {
         super(color, PieceType.PAWN);
     }
 
@@ -14,7 +14,7 @@ public class Pawn extends Piece {
         List<Square> targets = new ArrayList<>();
         int x = square.getX();
         int y = square.getY();
-        boolean w = getColor().isWhite();
+        boolean w = getColor() == Colour.WHITE;
         // index out of range not possible, cause pawn becomes queen
         Square sq1 = board.getSquareAt(w ? x-1 : x+1, y);
         boolean sq1IsSameColor = hasSameColor(sq1.getPiece());

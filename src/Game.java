@@ -28,7 +28,7 @@ public class Game {
     }
 
     public void start() {
-        boardUI.init(board, player.getColor().isBlack());
+        boardUI.init(board, player.getColor());
         boardUI.getCenterPanel().addMouseListener(
                 new MouseAdapter() {
                     @Override
@@ -43,7 +43,7 @@ public class Game {
     }
 
     public void handleClickOnSquare(int x, int y) {
-        Square dstSq = board.getSquareAt(player.getColor().isBlack() ? 7-x : x, y);
+        Square dstSq = board.getSquareAt(player.getColor() == Colour.BLACK ? 7-x : x, y);
         if (selectedPiece != null) {
             if (pieceTargets.contains(dstSq)) {
                 movePiece(selectedPiece, dstSq);
@@ -63,11 +63,18 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
-        if (!src.getPiece().hasMoved()) {
-            src.getPiece().setHasMoved(true);
+        Piece srcPiece = src.getPiece();
+        if (!srcPiece.hasMoved()) {
+            srcPiece.setHasMoved(true);
         }
-        if (src.getPiece().hasSameColor(dst.getPiece())) {
-            ((King) src.getPiece()).setDidCastling(true);
+        if (srcPiece.isPawn() && dst.getX() == (srcPiece.isWhite() ? 0 : 7)) {
+            src.setPiece(null);
+            dst.setPiece(new Queen(srcPiece.getColor()));
+            boardUI.deletePiece(src);
+            boardUI.setPieceAt(dst, dst.getPiece());
+        }
+        else if (srcPiece.hasSameColor(dst.getPiece())) {
+            ((King) srcPiece).setDidCastling(true);
             board.swapPieces(src, dst);
             boardUI.swapPieces(src, dst);
         } else {

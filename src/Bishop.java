@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Bishop extends Piece {
 
-    public Bishop(Color color) {
+    public Bishop(Colour color) {
         super(color, PieceType.BISHOP);
     }
 

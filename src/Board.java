@@ -1,24 +1,22 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Board {
 
     static final Map<Integer, Piece> PIECE_MAP  = new HashMap<>() {{
-        put(-6, new King(Color.BLACK));
-        put(-5, new Queen(Color.BLACK));
-        put(-4, new Rook(Color.BLACK));
-        put(-3, new Bishop(Color.BLACK));
-        put(-2, new Knight(Color.BLACK));
-        put(-1, new Pawn(Color.BLACK));
+        put(-6, new King(Colour.BLACK));
+        put(-5, new Queen(Colour.BLACK));
+        put(-4, new Rook(Colour.BLACK));
+        put(-3, new Bishop(Colour.BLACK));
+        put(-2, new Knight(Colour.BLACK));
+        put(-1, new Pawn(Colour.BLACK));
         put(0, null);
-        put(6, new King(Color.WHITE));
-        put(5, new Queen(Color.WHITE));
-        put(4, new Rook(Color.WHITE));
-        put(3, new Bishop(Color.WHITE));
-        put(2, new Knight(Color.WHITE));
-        put(1, new Pawn(Color.WHITE));
+        put(6, new King(Colour.WHITE));
+        put(5, new Queen(Colour.WHITE));
+        put(4, new Rook(Colour.WHITE));
+        put(3, new Bishop(Colour.WHITE));
+        put(2, new Knight(Colour.WHITE));
+        put(1, new Pawn(Colour.WHITE));
     }};
 
     private final Square[][] state;
@@ -33,7 +31,7 @@ public class Board {
             return;
         }
         for (int x = 0; x < 8; x++) {
-            Color side = x < 4 ? Color.BLACK : Color.WHITE;
+            Colour side = x < 4 ? Colour.BLACK : Colour.WHITE;
             if (x == 0 || x == 7) {
                 state[x][0] = new Square(new Rook(side), x, 0);
                 state[x][1] = new Square(new Knight(side), x, 1);
@@ -55,8 +53,8 @@ public class Board {
         }
     }
 
-    public Square getKingSquare(final Color color) {
-        return color.isBlack() ? blackKingSquare : whiteKingSquare;
+    public Square getKingSquare(final Colour color) {
+        return color == Colour.BLACK ? blackKingSquare : whiteKingSquare;
     }
 
     public void setBlackKingSquare(Square square) {

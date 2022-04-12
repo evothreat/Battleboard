@@ -6,7 +6,7 @@ public class King extends Piece {
 
     private boolean didCastling;
 
-    public King(Color color) {
+    public King(Colour color) {
         super(color, PieceType.KING);
     }
 
@@ -26,7 +26,7 @@ public class King extends Piece {
                 targets.add(sq);
             }
         }
-        boolean w = getColor().isWhite();
+        boolean w = getColor() == Colour.WHITE;
         Direction pawnDir = w ? Direction.E : Direction.S;
 
         for (int i = 0; i < 8 && !targets.isEmpty(); i++) {                                 // isEmpty() for optimization

@@ -1,12 +1,12 @@
 public class Player {
 
-    final private Color color;
+    final private Colour color;
 
-    public Player(Color color) {
+    public Player(Colour color) {
         this.color = color;
     }
 
-    public Color getColor() {
+    public Colour getColor() {
         return color;
     }
 }

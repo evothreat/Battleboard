@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Queen extends Piece {
 
-    public Queen(Color color) {
+    public Queen(Colour color) {
         super(color, PieceType.QUEEN);
     }
 

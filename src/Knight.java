@@ -1,10 +1,9 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Knight extends Piece {
 
-    public Knight(Color color) {
+    public Knight(Colour color) {
         super(color, PieceType.KNIGHT);
     }
 

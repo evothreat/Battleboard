@@ -2,18 +2,18 @@ import java.util.List;
 
 abstract public class Piece {
 
-    private final Color color;
+    private final Colour color;
     private final PieceType pieceType;
 
     // needed only for king & rook...
     private boolean hasMoved;
 
-    public Piece(Color color, PieceType pieceType) {
+    public Piece(Colour color, PieceType pieceType) {
         this.color = color;
         this.pieceType = pieceType;
     }
 
-    public Color getColor() {
+    public Colour getColor() {
         return color;
     }
 
@@ -74,6 +74,14 @@ abstract public class Piece {
 
     public boolean isPawn() {
         return pieceType == PieceType.PAWN;
+    }
+
+    public boolean isWhite() {
+        return color == Colour.WHITE;
+    }
+
+    public boolean isBlack() {
+        return color == Colour.BLACK;
     }
 
     abstract List<Square> getValidTargets(Board board, Square square);

@@ -32,9 +32,9 @@ public class BoardUI {
         boardSquares = new JLabel[8][8];
     }
 
-    public void init(Board board, boolean playerIsBlack) {
+    public void init(Board board, Colour playerColor) {
         drawLabels();
-        drawBoard(board, playerIsBlack);
+        drawBoard(board, playerColor);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
@@ -100,39 +100,49 @@ public class BoardUI {
         dstSq.setIcon(srcIcon);
     }
 
-    private void drawBoard(Board board, boolean playerIsBlack) {
+    public void deletePiece(Square square) {
+        boardSquares[square.getX()][square.getY()].setIcon(null);
+    }
+
+    public void setPieceAt(Square square, Piece piece) {
+        JLabel sq = boardSquares[square.getX()][square.getY()];
+        sq.setIcon(getPieceIcon(piece));
+    }
+
+    // store later in static variable...
+    public Icon getPieceIcon(Piece piece) {
+        String c = piece.isWhite() ? "w" : "b";
+        switch (piece.getPieceType()) {
+            case KING:
+                return new ImageIcon("resources/"+c+"k.png");
+            case QUEEN:
+                return new ImageIcon("resources/"+c+"q.png");
+            case ROOK:
+                return new ImageIcon("resources/"+c+"r.png");
+            case BISHOP:
+                return new ImageIcon("resources/"+c+"b.png");
+            case KNIGHT:
+                return new ImageIcon("resources/"+c+"n.png");
+            case PAWN:
+                return new ImageIcon("resources/"+c+"p.png");
+        }
+        return null;
+    }
+
+    private void drawBoard(Board board, Colour playerColor) {
         // draw pieces
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Piece piece = board.getSquareAt(x, y).getPiece();
                 JLabel label = new JLabel("", SwingConstants.CENTER);
                 if (piece != null) {
-                    String color = piece.getColor().isWhite() ? "w" : "b";
-                    switch (piece.getPieceType()) {
-                        case KING:
-                            label.setIcon(new ImageIcon("resources/" + color + "k.png"));
-                            break;
-                        case QUEEN:
-                            label.setIcon(new ImageIcon("resources/" + color + "q.png"));
-                            break;
-                        case ROOK:
-                            label.setIcon(new ImageIcon("resources/" + color + "r.png"));
-                            break;
-                        case BISHOP:
-                            label.setIcon(new ImageIcon("resources/" + color + "b.png"));
-                            break;
-                        case KNIGHT:
-                            label.setIcon(new ImageIcon("resources/" + color + "n.png"));
-                            break;
-                        case PAWN:
-                            label.setIcon(new ImageIcon("resources/" + color + "p.png"));
-                            break;
-                    }
+                    label.setIcon(getPieceIcon(piece));
                 }
                 boardSquares[x][y] = label;
             }
         }
         // draw squares
+        boolean playerIsBlack = playerColor == Colour.BLACK;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 int z = playerIsBlack ? 7 - x : x;

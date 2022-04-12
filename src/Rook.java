@@ -2,7 +2,7 @@ import java.util.List;
 
 public class Rook extends Piece {
 
-    public Rook(Color color) {
+    public Rook(Colour color) {
         super(color, PieceType.ROOK);
     }
 
