@@ -14,27 +14,21 @@ public class King extends Piece {
     List<Square> getValidTargets(Board board, Square square) {
         List<Square> targets = getTargets(board, square);
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
-        // should be after remove, cause is settled and has same color!
+
+        // should be after removeIf, cause target is settled and has same color!
         if (!hasMoved() && !didCastling) {
-            int x = square.getX();
-            int y = square.getY();
-            if (!board.getSquareAt(x, y - 1).isSettled() && !board.getSquareAt(x, y - 2).isSettled() && !board.getSquareAt(x, y - 3).isSettled()) {
-                Square sq = board.getSquareAt(x, y - 4);
-                Piece p = sq.getPiece();
-                if (p != null && hasSameColor(p) && p.isRook() && !((Rook) p).hasMoved()) {
-                    targets.add(sq);
-                }
+            Square sq = Target.getNextPieceSqInDirection(board, square, getColor(), Direction.N);
+            if (sq != null && sq.getPiece().isRook() && !((Rook) sq.getPiece()).hasMoved()) {
+                targets.add(sq);
             }
-            if (!board.getSquareAt(x, y + 1).isSettled() && !board.getSquareAt(x, y + 2).isSettled()) {
-                Square sq = board.getSquareAt(x, y + 3);
-                Piece p = sq.getPiece();
-                if (p != null && hasSameColor(p) && p.isRook() && !((Rook) p).hasMoved()) {
-                    targets.add(sq);
-                }
+            sq = Target.getNextPieceSqInDirection(board, square, getColor(), Direction.S);
+            if (sq != null && sq.getPiece().isRook() && !((Rook) sq.getPiece()).hasMoved()) {
+                targets.add(sq);
             }
         }
         boolean w = getColor().isWhite();
-        Direction pawnDir = w ? Direction.E : Direction.W;
+        Direction pawnDir = w ? Direction.E : Direction.S;
+
         for (int i = 0; i < 8 && !targets.isEmpty(); i++) {                                 // isEmpty() for optimization
             for (int j = 0; j < 8; j++) {
                 Square src = board.getSquareAt(i, j);

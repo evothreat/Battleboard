@@ -44,6 +44,20 @@ public class Target {
         }
         return targets;
     }
+
+    static public Square getNextPieceSqInDirection(Board board, Square src, Color pieceColor, Direction dir) {
+        int currX = src.getX() + dir.getX();
+        int currY = src.getY() + dir.getY();
+        while (currX >= 0 && currX < 8 && currY >= 0 && currY < 8) {
+            Square sq = board.getSquareAt(currX, currY);
+            if (sq.isSettled() && sq.getPiece().getColor() == pieceColor) {
+                return sq;
+            }
+            currX += dir.getX();
+            currY += dir.getY();
+        }
+        return null;
+    }
 }
 
 

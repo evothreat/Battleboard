@@ -15,9 +15,9 @@ public class Main {
     };
 
     public static void main(String[] args){
-        Player player = new Player(Color.WHITE);
+        Player player = new Player(Color.BLACK);
 
-        Board board = new Board(testBoard);
+        Board board = new Board(null);
 
         BoardUI boardUI = new BoardUI();
 
