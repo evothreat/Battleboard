@@ -38,23 +38,57 @@ abstract public class Piece {
         return other != null && color == other.getColor();
     }
 
-    public boolean canAttackKing(Board board, Square square) {
-        return getValidTargets(board, square).contains(board.getKingSquare(color.toggle()));
+    public Square canAttackKing(Board board, Square square) {
+        Colour c = square.getPiece().getColor().toggle();
+        return getValidTargets(board, square).stream().filter(sq -> sq.isSettled() &&
+                                                              sq.getPiece().isKing() &&
+                                                              sq.getPiece().getColor() == c).findFirst().orElse(null);
     }
 
-    public boolean canDefendKing(Board board, Square ownSquare, Square enemySquare) {
-        List<Square> ownTargets = getValidTargets(board, ownSquare);
-        if (ownTargets.contains(enemySquare)) {
+    public boolean canDefendKing(Board board, Square ownSq, Square enemySq, Square kingSq) {
+        List<Square> ownTargets = getValidTargets(board, ownSq);
+        if (ownTargets.contains(enemySq)) {
             return true;
         }
-        if (enemySquare.getPiece().isKnight()) {
+        if (enemySq.getPiece().isKnight()) {
             return false;
         }
-        Square kingSquare = board.getKingSquare(color);
-        Direction enemyToKingDir = Direction.from2Points(enemySquare.getX(), enemySquare.getY(),
-                                                         kingSquare.getX(), kingSquare.getY());
-        List<Square> kingDirTargets = Target.getTargetsInDirection(board, enemySquare, color.toggle(), enemyToKingDir);
-        return kingDirTargets.stream().anyMatch(ownTargets::contains);
+        Direction enemyToKingDir = Direction.from2Points(enemySq.getX(), enemySq.getY(), kingSq.getX(), kingSq.getY());
+        List<Square> enemyToKingTargets = Target.getTargetsInDirection(board, enemySq, color.toggle(), enemyToKingDir);
+        return enemyToKingTargets.stream().anyMatch(ownTargets::contains);
+    }
+
+    public MoveEvent doesCheckOrMateAt(Board board, Square square) {
+        Square enemyKingSq = square.getPiece().canAttackKing(board, square);
+        Colour enemyColor = square.getPiece().getColor().toggle();
+        if (enemyKingSq != null) {
+            Piece enemyKing = enemyKingSq.getPiece();
+            List<Square> enemyKingTargets = enemyKing.getValidTargets(board, enemyKingSq);
+            //if (enemyKingTargets.contains(square)) {
+            //    return MoveEvent.CHECK;
+            //}
+            // CHECK FOR CHECKMATE -> enemy's king can't escape
+            if (enemyKingTargets.isEmpty()) {
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        Square sq = board.getSquareAt(i, j);
+                        if (sq.isSettled() && sq.getPiece().getColor() == enemyColor && !sq.getPiece().isKing()) {
+                            // ENEMY'S KING CAN BE DEFENDED -> enemy's king can be defended
+                            if (sq.getPiece().canDefendKing(board, sq, square, enemyKingSq)) {
+                                return MoveEvent.CHECK;
+                            }
+                        }
+                    }
+                }
+                return MoveEvent.CHECKMATE;
+            }
+            return MoveEvent.CHECK;
+        }
+        // CHECK FOR STALEMATE -> enemy has no targets, so can't move
+        if (!board.canMove(enemyColor)) {
+            return MoveEvent.STALEMATE;
+        }
+        return MoveEvent.NONE;
     }
 
     public boolean isKing() {

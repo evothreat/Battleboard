@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
 
@@ -75,30 +72,33 @@ public class Board {
         return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
-    // we have to store all changes!
-    public MoveEvent makeMove(Square src, Square dst, boolean storeMove) {
+    public EnumSet<MoveEvent> makeMove(Square src, Square dst, boolean storeMove) {
         if (storeMove) {
             storedMoves.add(new Move(new Square(src), new Square(dst)));
         }
+        EnumSet<MoveEvent> events = EnumSet.noneOf(MoveEvent.class);
         Piece piece = src.getPiece();
         if (!piece.hasMoved()) {
             piece.setHasMoved(true);
         }
         if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
             src.setPiece(null);
-            dst.setPiece(new Queen(piece.getColor()));
-            return MoveEvent.PROMOTION;
+            piece = new Queen(piece.getColor());
+            dst.setPiece(piece);
+            events.add(MoveEvent.PROMOTION);
         }
-        if (piece.hasSameColor(dst.getPiece())) {
+        else if (piece.hasSameColor(dst.getPiece())) {
             src.setPiece(dst.getPiece());
             dst.setPiece(piece);
             ((King) piece).setDidCastling(true);
-            return MoveEvent.CASTLING;
+            events.add(MoveEvent.CASTLING);
+        } else {
+            events.add(MoveEvent.MOVE);
+            dst.setPiece(piece);
+            src.setPiece(null);
         }
-        dst.setPiece(piece);
-        src.setPiece(null);
-        return MoveEvent.MOVE;
-        // TODO: check for check, checkmate, stalemate
+        events.add(piece.doesCheckOrMateAt(this, dst));
+        return events;
     }
 
     public void unmakeMove() {
@@ -127,5 +127,17 @@ public class Board {
                 state[x][y] = new Square(PIECE_MAP.get(newState[x][y]), x, y);
             }
         }
+    }
+
+    public boolean canMove(Colour color) {
+        for (int i = 0; i < 8; i++) {
+            for (Square sq : state[i]) {
+                if (sq.isSettled() && sq.getPiece().getColor() == color &&
+                    !sq.getPiece().getValidTargets(this, sq).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

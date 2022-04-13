@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class Game {
@@ -63,17 +64,29 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
-        switch (board.makeMove(src, dst, false)) {
-            case MOVE:
-                boardUI.movePiece(src, dst);
-                break;
-            case PROMOTION:
-                boardUI.deletePiece(src);
-                boardUI.setPieceAt(dst, dst.getPiece());
-                break;
-            case CASTLING:
-                boardUI.swapPieces(src, dst);
-                break;
+        EnumSet<MoveEvent> moveEvents = board.makeMove(src, dst, false);
+        for (MoveEvent me : moveEvents) {
+            switch (me) {
+                case MOVE:
+                    boardUI.movePiece(src, dst);
+                    break;
+                case CASTLING:
+                    boardUI.swapPieces(src, dst);
+                    break;
+                case PROMOTION:
+                    boardUI.deletePiece(src);
+                    boardUI.setPieceAt(dst, dst.getPiece());
+                    break;
+                case CHECK:
+                    System.out.println("Got CHECK from " + (dst.getPiece().getColor() == Colour.BLACK ? "BLACK" : "WHITE"));
+                    break;
+                case CHECKMATE:
+                    System.out.println("Got CHECKMATE from " + (dst.getPiece().getColor() == Colour.BLACK ? "BLACK" : "WHITE"));
+                    break;
+                case STALEMATE:
+                    System.out.println("Got STALEMATE from " + (dst.getPiece().getColor() == Colour.BLACK ? "BLACK" : "WHITE"));
+                    break;
+            }
         }
         clearSelection();
     }

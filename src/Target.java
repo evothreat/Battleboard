@@ -45,6 +45,7 @@ public class Target {
         return targets;
     }
 
+    // MAYBE RETURN LAST SQUARE
     static public Square getNextPieceSqInDirection(Board board, Square src, Colour colour, Direction dir) {
         int currX = src.getX() + dir.getX();
         int currY = src.getY() + dir.getY();

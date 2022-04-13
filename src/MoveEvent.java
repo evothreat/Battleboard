@@ -1,4 +1,5 @@
 public enum MoveEvent {
+    NONE,
     MOVE,
     CASTLING,
     PROMOTION,

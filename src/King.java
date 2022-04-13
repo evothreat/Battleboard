@@ -17,9 +17,9 @@ public class King extends Piece {
 
     @Override
     List<Square> getValidTargets(Board board, Square square) {
+        // targets will also contain enemy squares
         List<Square> targets = getTargets(board, square);
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
-
         // should be after removeIf, cause target is settled and has same color!
         if (!hasMoved() && !didCastling) {
             Square sq = Target.getNextPieceSqInDirection(board, square, getColor(), Direction.N);
@@ -32,7 +32,7 @@ public class King extends Piece {
             }
         }
         boolean w = getColor() == Colour.WHITE;
-        Direction pawnDir = w ? Direction.E : Direction.S;
+        Direction straight = w ? Direction.E : Direction.W;
 
         for (int i = 0; i < 8 && !targets.isEmpty(); i++) {                                 // isEmpty() for optimization
             for (int j = 0; j < 8; j++) {
@@ -45,7 +45,7 @@ public class King extends Piece {
                 }
                 List<Square> enemyTargets = p.getValidTargets(board, src);
                 if (p.isPawn()) {
-                    enemyTargets.removeIf(dst -> Direction.from2Points(src.getX(), src.getY(), dst.getX(), dst.getY()) == pawnDir);
+                    enemyTargets.removeIf(dst -> Direction.from2Points(src.getX(), src.getY(), dst.getX(), dst.getY()) == straight);
                     enemyTargets.add(board.getSquareAt(w ? src.getX()+1 : src.getX()-1, src.getY()-1));
                     enemyTargets.add(board.getSquareAt(w ? src.getX()+1 : src.getX()-1, src.getY()+1));
                 }
