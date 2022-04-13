@@ -3,11 +3,11 @@ import java.util.List;
 public class Bishop extends Piece {
 
     public Bishop(Colour color) {
-        super(color, PieceType.BISHOP, false);
+        super(PieceType.BISHOP, color, color == Colour.BLACK ? -30 : 30, false);
     }
 
     public Bishop(Bishop other) {
-        super(other.getColor(), other.getPieceType(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
     }
 
     @Override

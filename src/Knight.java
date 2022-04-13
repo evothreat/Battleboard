@@ -4,11 +4,11 @@ import java.util.List;
 public class Knight extends Piece {
 
     public Knight(Colour color) {
-        super(color, PieceType.KNIGHT, false);
+        super(PieceType.KNIGHT, color, color == Colour.BLACK ? -30 : 30, false);
     }
 
     public Knight(Knight other) {
-        super(other.getColor(), other.getPieceType(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
     }
 
     @Override

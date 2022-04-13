@@ -7,11 +7,11 @@ public class King extends Piece {
     private boolean didCastling;
 
     public King(Colour color) {
-        super(color, PieceType.KING, false);
+        super(PieceType.KING, color, color == Colour.BLACK ? -900 : 900, false);
     }
 
     public King(King other) {
-        super(other.getColor(), other.getPieceType(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
         didCastling = other.didCastling;
     }
 

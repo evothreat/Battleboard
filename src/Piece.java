@@ -2,24 +2,28 @@ import java.util.List;
 
 abstract public class Piece {
 
-    private final Colour color;
     private final PieceType pieceType;
-
-    // needed only for king & rook...
+    private final Colour color;
+    private final int weight;
     private boolean hasMoved;
 
-    public Piece(Colour color, PieceType pieceType, boolean hasMoved) {
+    public Piece(PieceType pieceType, Colour color, int weight, boolean hasMoved) {
         this.color = color;
         this.pieceType = pieceType;
         this.hasMoved = hasMoved;
+        this.weight = weight;
+    }
+
+    public PieceType getPieceType() {
+        return pieceType;
     }
 
     public Colour getColor() {
         return color;
     }
 
-    public PieceType getPieceType() {
-        return pieceType;
+    public int getWeight() {
+        return weight;
     }
 
     public boolean hasMoved() {
