@@ -31,6 +31,9 @@ public class King extends Piece {
                 targets.add(sq);
             }
         }
+        // add own square, to check whether king is under attack
+        targets.add(square);
+
         boolean w = getColor() == Colour.WHITE;
         Direction straight = w ? Direction.E : Direction.W;
 
@@ -52,6 +55,19 @@ public class King extends Piece {
                 enemyTargets.forEach(t -> {
                     if (t != null) targets.remove(t);
                 });
+            }
+        }
+        for (int i = targets.size() - 1; i >= 0; i--) {
+            Piece piece = targets.get(i).getPiece();
+            if (piece == null || !hasSameColor(piece)) {
+                break;
+            }
+            if (piece.isKing()) {
+                targets.remove(i);
+                break;
+            }
+            if (piece.isRook()) {
+                targets.remove(i);
             }
         }
         return targets;

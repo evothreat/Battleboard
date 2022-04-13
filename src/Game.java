@@ -52,7 +52,7 @@ public class Game {
             }
             clearSelection();
         }
-        if (dstSq.isSettled() && dstSq.getPiece().getColor() == player.getColor()) {
+        if (dstSq.isSettled()) { // ADD THIS: && dstSq.getPiece().getColor() == player.getColor()) {
             selectPiece(dstSq);
         }
     }

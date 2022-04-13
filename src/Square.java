@@ -64,12 +64,12 @@ public class Square {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Square square = (Square) o;
-        return x == square.x && y == square.y && piece.equals(square.piece);
+        return x == square.x && y == square.y; // && piece.equals(square.piece);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(piece, x, y);
+        return Objects.hash(x, y); //,piece);
     }
 
     @Override
