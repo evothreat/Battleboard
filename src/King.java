@@ -48,7 +48,7 @@ public class King extends Piece {
                 }
                 List<Square> enemyTargets = p.getValidTargets(board, src);
                 if (p.isPawn()) {
-                    enemyTargets.removeIf(dst -> Direction.from2Points(src.getX(), src.getY(), dst.getX(), dst.getY()) == straight);
+                    enemyTargets.removeIf(dst -> Direction.from2Squares(src, dst) == straight);
                     enemyTargets.add(board.getSquareAt(w ? src.getX()+1 : src.getX()-1, src.getY()-1));
                     enemyTargets.add(board.getSquareAt(w ? src.getX()+1 : src.getX()-1, src.getY()+1));
                 }

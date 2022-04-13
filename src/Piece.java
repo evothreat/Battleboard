@@ -53,7 +53,7 @@ abstract public class Piece {
         if (enemySq.getPiece().isKnight()) {
             return false;
         }
-        Direction enemyToKingDir = Direction.from2Points(enemySq.getX(), enemySq.getY(), kingSq.getX(), kingSq.getY());
+        Direction enemyToKingDir = Direction.from2Squares(enemySq, kingSq);
         List<Square> enemyToKingTargets = Target.getTargetsInDirection(board, enemySq, color.toggle(), enemyToKingDir);
         return enemyToKingTargets.stream().anyMatch(ownTargets::contains);
     }
