@@ -69,9 +69,31 @@ public class Board {
         return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
-    public void movePiece(Square src, Square dst) {
-        dst.setPiece(src.getPiece());
+    // we have to store all changes!
+    public MoveEvent makeMove(Square src, Square dst) {
+        Piece piece = src.getPiece();
+        if (!piece.hasMoved()) {
+            piece.setHasMoved(true);
+        }
+        if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
+            src.setPiece(null);
+            dst.setPiece(new Queen(piece.getColor()));
+            return MoveEvent.PROMOTION;
+        }
+        if (piece.hasSameColor(dst.getPiece())) {
+            src.setPiece(dst.getPiece());
+            dst.setPiece(piece);
+            ((King) piece).setDidCastling(true);
+            return MoveEvent.CASTLING;
+        }
+        dst.setPiece(piece);
         src.setPiece(null);
+        return MoveEvent.MOVE;
+        // TODO: check for check, checkmate, stalemate
+    }
+
+    public void unmakeMove() {
+        // unmake last move...
     }
 
     public void swapPieces(Square src, Square dst) {

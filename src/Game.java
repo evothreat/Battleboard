@@ -63,23 +63,17 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
-        Piece srcPiece = src.getPiece();
-        if (!srcPiece.hasMoved()) {
-            srcPiece.setHasMoved(true);
-        }
-        if (srcPiece.isPawn() && dst.getX() == (srcPiece.isWhite() ? 0 : 7)) {
-            src.setPiece(null);
-            dst.setPiece(new Queen(srcPiece.getColor()));
-            boardUI.deletePiece(src);
-            boardUI.setPieceAt(dst, dst.getPiece());
-        }
-        else if (srcPiece.hasSameColor(dst.getPiece())) {
-            ((King) srcPiece).setDidCastling(true);
-            board.swapPieces(src, dst);
-            boardUI.swapPieces(src, dst);
-        } else {
-            board.movePiece(src, dst);
-            boardUI.movePiece(src, dst);
+        switch (board.makeMove(src, dst)) {
+            case MOVE:
+                boardUI.movePiece(src, dst);
+                break;
+            case PROMOTION:
+                boardUI.deletePiece(src);
+                boardUI.setPieceAt(dst, dst.getPiece());
+                break;
+            case CASTLING:
+                boardUI.swapPieces(src, dst);
+                break;
         }
         clearSelection();
     }
