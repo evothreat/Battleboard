@@ -63,7 +63,7 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
-        switch (board.makeMove(src, dst)) {
+        switch (board.makeMove(src, dst, false)) {
             case MOVE:
                 boardUI.movePiece(src, dst);
                 break;

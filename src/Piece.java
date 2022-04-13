@@ -8,9 +8,10 @@ abstract public class Piece {
     // needed only for king & rook...
     private boolean hasMoved;
 
-    public Piece(Colour color, PieceType pieceType) {
+    public Piece(Colour color, PieceType pieceType, boolean hasMoved) {
         this.color = color;
         this.pieceType = pieceType;
+        this.hasMoved = hasMoved;
     }
 
     public Colour getColor() {

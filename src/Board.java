@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Board {
@@ -24,8 +26,12 @@ public class Board {
     private Square blackKingSquare;
     private Square whiteKingSquare;
 
+    private final List<Move> storedMoves;
+
     public Board(Integer[][] newState) {
         state = new Square[8][8];
+        storedMoves = new ArrayList<>();
+
         if (newState != null) {
             setState(newState);
             return;
@@ -70,7 +76,10 @@ public class Board {
     }
 
     // we have to store all changes!
-    public MoveEvent makeMove(Square src, Square dst) {
+    public MoveEvent makeMove(Square src, Square dst, boolean storeMove) {
+        if (storeMove) {
+            storedMoves.add(new Move(new Square(src), new Square(dst)));
+        }
         Piece piece = src.getPiece();
         if (!piece.hasMoved()) {
             piece.setHasMoved(true);
@@ -93,7 +102,17 @@ public class Board {
     }
 
     public void unmakeMove() {
-        // unmake last move...
+        if (storedMoves.isEmpty()) return;
+
+        int i = storedMoves.size()-1;
+        Move lastMove = storedMoves.get(i);
+        Square src = lastMove.getSrc();
+        Square dst = lastMove.getDst();
+
+        state[src.getX()][src.getY()].setPiece(state[dst.getX()][dst.getY()].getPiece());
+        state[dst.getX()][dst.getY()].setPiece(null);
+
+        storedMoves.remove(i);
     }
 
     public void swapPieces(Square src, Square dst) {

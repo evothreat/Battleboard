@@ -6,7 +6,11 @@ import java.util.List;
 public class Pawn extends Piece {
 
     public Pawn(Colour color) {
-        super(color, PieceType.PAWN);
+        super(color, PieceType.PAWN, false);
+    }
+
+    public Pawn(Pawn other) {
+        super(other.getColor(), other.getPieceType(), other.hasMoved());
     }
 
     @Override

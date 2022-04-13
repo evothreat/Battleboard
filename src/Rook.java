@@ -3,7 +3,11 @@ import java.util.List;
 public class Rook extends Piece {
 
     public Rook(Colour color) {
-        super(color, PieceType.ROOK);
+        super(color, PieceType.ROOK, false);
+    }
+
+    public Rook(Rook other) {
+        super(other.getColor(), other.getPieceType(), other.hasMoved());
     }
 
     @Override

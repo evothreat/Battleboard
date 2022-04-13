@@ -7,7 +7,12 @@ public class King extends Piece {
     private boolean didCastling;
 
     public King(Colour color) {
-        super(color, PieceType.KING);
+        super(color, PieceType.KING, false);
+    }
+
+    public King(King other) {
+        super(other.getColor(), other.getPieceType(), other.hasMoved());
+        didCastling = other.didCastling;
     }
 
     @Override

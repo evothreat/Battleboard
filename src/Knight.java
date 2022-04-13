@@ -4,7 +4,11 @@ import java.util.List;
 public class Knight extends Piece {
 
     public Knight(Colour color) {
-        super(color, PieceType.KNIGHT);
+        super(color, PieceType.KNIGHT, false);
+    }
+
+    public Knight(Knight other) {
+        super(other.getColor(), other.getPieceType(), other.hasMoved());
     }
 
     @Override
