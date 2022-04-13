@@ -145,7 +145,7 @@ public class BoardUI {
         boolean playerIsBlack = playerColor == Colour.BLACK;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                int z = playerIsBlack ? 7 - x : x;
+                int z = playerIsBlack ? 7-x : x;
                 JLabel lab = boardSquares[z][y];
                 lab.setOpaque(true);
                 lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));

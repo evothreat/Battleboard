@@ -14,7 +14,7 @@ public class Main {
     };
 
     public static void main(String[] args){
-        Player player = new Player(Colour.BLACK);
+        Player player = new Player(Colour.WHITE);
 
         Board board = new Board(null);
 
