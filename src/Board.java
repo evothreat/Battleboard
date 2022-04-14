@@ -19,13 +19,13 @@ public class Board {
     }};
 
     private final Square[][] state;
-
-    private Square blackKingSquare;
-    private Square whiteKingSquare;
+    private Colour turn;
+    private List<Square> kingDefenders;
+    private boolean isKingInCheck;
 
     private final List<Move> storedMoves;
 
-    public Board(Integer[][] newState) {
+    public Board(final Integer[][] newState) {
         state = new Square[8][8];
         storedMoves = new ArrayList<>();
 
@@ -56,23 +56,48 @@ public class Board {
         }
     }
 
-    public Square getKingSquare(final Colour color) {
-        return color == Colour.BLACK ? blackKingSquare : whiteKingSquare;
-    }
-
-    public void setBlackKingSquare(Square square) {
-        this.blackKingSquare = square;
-    }
-
-    public void setWhiteKingSquare(Square square) {
-        this.whiteKingSquare = square;
-    }
-
     public Square getSquareAt(final int x, final int y) {
         return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
-    public EnumSet<MoveEvent> makeMove(Square src, Square dst, boolean storeMove) {
+    public MoveEvent calcCheckOrMate(final Colour color) {
+        for (int i = 0; i < 8; i++) {
+            for (Square sq : state[i]) {
+                // enemy found
+                if (sq.isSettled() && sq.getPiece().getColor() != color) {
+                    Square kingSq = sq.getPiece().findEnemyKing(this, sq);
+                    // enemy is an attacker
+                    if (kingSq != null) {
+                        isKingInCheck = true;
+                        kingDefenders = findKingDefenders(color, sq, kingSq);
+                        if (kingSq.getPiece().getValidTargets(this, kingSq).isEmpty() && kingDefenders.isEmpty()) {
+                            return MoveEvent.CHECKMATE;
+                        }
+                        return MoveEvent.CHECK;
+                    }
+                }
+            }
+        }
+        if (!canMove(color.toggle())) {
+            return MoveEvent.STALEMATE;
+        }
+        return MoveEvent.NONE;
+    }
+
+    public List<Square> findKingDefenders(final Colour color, final Square enemySq, final Square kingSq) {
+        List<Square> defenders = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (Square sq : state[i]) {
+                if (sq.isSettled() && sq.getPiece().getColor() == color && !sq.getPiece().isKing() &&
+                    sq.getPiece().canDefendKing(this, sq, enemySq, kingSq)) {
+                    defenders.add(sq);
+                }
+            }
+        }
+        return defenders;
+    }
+
+    public EnumSet<MoveEvent> makeMove(final Square src, final Square dst, final boolean storeMove) {
         if (storeMove) {
             storedMoves.add(new Move(new Square(src), new Square(dst)));
         }
@@ -97,7 +122,7 @@ public class Board {
             dst.setPiece(piece);
             src.setPiece(null);
         }
-        events.add(piece.doesCheckOrMateAt(this, dst));
+        events.add(calcCheckOrMate(piece.getColor().toggle()));
         return events;
     }
 
@@ -115,13 +140,7 @@ public class Board {
         storedMoves.remove(i);
     }
 
-    public void swapPieces(Square src, Square dst) {
-        Piece srcPiece = src.getPiece();
-        src.setPiece(dst.getPiece());
-        dst.setPiece(srcPiece);
-    }
-
-    public void setState(Integer[][] newState) {
+    public void setState(final Integer[][] newState) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 state[x][y] = new Square(PIECE_MAP.get(newState[x][y]), x, y);
@@ -129,7 +148,7 @@ public class Board {
         }
     }
 
-    public boolean canMove(Colour color) {
+    public boolean canMove(final Colour color) {
         for (int i = 0; i < 8; i++) {
             for (Square sq : state[i]) {
                 if (sq.isSettled() && sq.getPiece().getColor() == color &&

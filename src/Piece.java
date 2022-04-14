@@ -38,7 +38,7 @@ abstract public class Piece {
         return other != null && color == other.getColor();
     }
 
-    public Square canAttackKing(Board board, Square square) {
+    public Square findEnemyKing(Board board, Square square) {
         Colour c = square.getPiece().getColor().toggle();
         return getValidTargets(board, square).stream().filter(sq -> sq.isSettled() &&
                                                               sq.getPiece().isKing() &&
@@ -56,39 +56,6 @@ abstract public class Piece {
         Direction enemyToKingDir = Direction.from2Squares(enemySq, kingSq);
         List<Square> enemyToKingTargets = Target.getTargetsInDirection(board, enemySq, color.toggle(), enemyToKingDir);
         return enemyToKingTargets.stream().anyMatch(ownTargets::contains);
-    }
-
-    public MoveEvent doesCheckOrMateAt(Board board, Square square) {
-        Square enemyKingSq = square.getPiece().canAttackKing(board, square);
-        Colour enemyColor = square.getPiece().getColor().toggle();
-        if (enemyKingSq != null) {
-            Piece enemyKing = enemyKingSq.getPiece();
-            List<Square> enemyKingTargets = enemyKing.getValidTargets(board, enemyKingSq);
-            //if (enemyKingTargets.contains(square)) {
-            //    return MoveEvent.CHECK;
-            //}
-            // CHECK FOR CHECKMATE -> enemy's king can't escape
-            if (enemyKingTargets.isEmpty()) {
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        Square sq = board.getSquareAt(i, j);
-                        if (sq.isSettled() && sq.getPiece().getColor() == enemyColor && !sq.getPiece().isKing()) {
-                            // ENEMY'S KING CAN BE DEFENDED -> enemy's king can be defended
-                            if (sq.getPiece().canDefendKing(board, sq, square, enemyKingSq)) {
-                                return MoveEvent.CHECK;
-                            }
-                        }
-                    }
-                }
-                return MoveEvent.CHECKMATE;
-            }
-            return MoveEvent.CHECK;
-        }
-        // CHECK FOR STALEMATE -> enemy has no targets, so can't move
-        if (!board.canMove(enemyColor)) {
-            return MoveEvent.STALEMATE;
-        }
-        return MoveEvent.NONE;
     }
 
     public boolean isKing() {
