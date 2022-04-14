@@ -52,13 +52,13 @@ public class Game {
             }
             clearSelection();
         }
-        if (dstSq.isSettled()) { // ADD THIS: && dstSq.getPiece().getColor() == player.getColor()) {
+        if (dstSq.isSettled() && board.getTurn() == dstSq.getPiece().getColor()) { // ADD THIS: && dstSq.getPiece().getColor() == player.getColor()) {
             selectPiece(dstSq);
         }
     }
 
     private void selectPiece(Square square) {
-        pieceTargets = square.getPiece().getValidTargets(board, square);
+        pieceTargets = board.getValidTargets(board, square);
         selectedPiece = square;
         boardUI.selectPiece(square, pieceTargets);
     }

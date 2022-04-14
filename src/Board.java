@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -20,8 +22,8 @@ public class Board {
 
     private final Square[][] state;
     private Colour turn;
-    private List<Square> kingDefenseTargets;
-    private boolean isKingInCheck;
+    private List<Square> kingDefense;
+    private boolean kingInCheck;
 
     private final List<Move> storedMoves;
 
@@ -68,10 +70,10 @@ public class Board {
                     Square kingSq = sq.getPiece().getEnemyKing(this, sq);
                     // enemy is an attacker
                     if (kingSq != null) {
-                        isKingInCheck = true;
-                        kingDefenseTargets = getKingDefenseTargets(color, sq, kingSq);
+                        kingInCheck = true;
+                        kingDefense = getKingDefenseTargets(color, sq, kingSq);
                         // will be calculated only once so don't worry about...
-                        if (kingSq.getPiece().getValidTargets(this, kingSq).isEmpty() && kingDefenseTargets.isEmpty()) {
+                        if (kingDefense.isEmpty() && kingSq.getPiece().getValidTargets(this, kingSq).isEmpty()) {
                             return MoveEvent.CHECKMATE;
                         }
                         return MoveEvent.CHECK;
@@ -90,14 +92,37 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             for (Square sq : state[i]) {
                 if (sq.isSettled() && sq.getPiece().getColor() == color && !sq.getPiece().isKing()) {
-                    defense.addAll(sq.getPiece().getKingDefenseTargets(this, sq,enemySq, kingSq));
+                    defense.addAll(sq.getPiece().getKingDefenseTargets(this, sq, enemySq, kingSq));
                 }
             }
         }
         return defense;
     }
 
+    public boolean isKingInCheck(Colour color) {
+        return color == turn && kingInCheck;
+    }
+
+    public List<Square> getKingDefenseIntersect(Square square) {
+        return square.getPiece().getValidTargets(this, square).stream().
+                filter(sq -> kingDefense.contains(sq)).collect(Collectors.toList());
+    }
+
+    public List<Square> getValidTargets(Board board, Square square) {
+        Colour pieceColor = square.getPiece().getColor();
+        if (turn != pieceColor) {
+            return new ArrayList<>();
+        }
+        if (isKingInCheck(pieceColor)) {
+            return getKingDefenseIntersect(square);
+        }
+        return square.getPiece().getValidTargets(this, square);
+    }
+
     public EnumSet<MoveEvent> makeMove(final Square src, final Square dst, final boolean storeMove) {
+        if (getValidTargets(this, src).isEmpty()) {
+            return EnumSet.of(MoveEvent.NONE);
+        }
         if (storeMove) {
             storedMoves.add(new Move(new Square(src), new Square(dst)));
         }
@@ -122,8 +147,14 @@ public class Board {
             dst.setPiece(piece);
             src.setPiece(null);
         }
+        kingInCheck = false;
         events.add(calcCheckOrMate(piece.getColor().toggle()));
+        turn = turn.toggle();
         return events;
+    }
+
+    public Colour getTurn() {
+        return turn;
     }
 
     public void unmakeMove() {
