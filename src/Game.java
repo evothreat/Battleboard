@@ -58,13 +58,13 @@ public class Game {
     }
 
     private void selectPiece(Square square) {
-        pieceTargets = board.getValidTargets(board, square);
+        pieceTargets = board.getPossibleTargets(square);
         selectedPiece = square;
         boardUI.selectPiece(square, pieceTargets);
     }
 
     private void movePiece(Square src, Square dst) {
-        EnumSet<MoveEvent> moveEvents = board.makeMove(src, dst, false);
+        EnumSet<MoveEvent> moveEvents = board.makeMove(src, dst);
         for (MoveEvent me : moveEvents) {
             switch (me) {
                 case MOVE:

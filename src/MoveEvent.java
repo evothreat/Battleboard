@@ -10,4 +10,8 @@ public enum MoveEvent {
     public boolean isGameOver() {
         return this == STALEMATE || this == CHECKMATE;
     }
+
+    public boolean isCheckOrMate() {
+        return this == CHECK || this == CHECKMATE || this == STALEMATE;
+    }
 }

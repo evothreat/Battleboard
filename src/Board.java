@@ -34,8 +34,13 @@ public class Board {
 
     private Colour turn;
 
-    private List<Square> kingDefense;
-    private boolean kingInCheck;
+    private Square blackKingSq;
+    private final List<Square> blackPiecesSq;
+
+    private Square whiteKingSq;
+    private final List<Square> whitePiecesSq;
+
+    private boolean isCheck;
 
     private final List<Move> storedMoves;
 
@@ -43,141 +48,228 @@ public class Board {
         this.state = new Square[8][8];
         this.turn = turn;
 
+        blackPiecesSq = new ArrayList<>();
+        whitePiecesSq = new ArrayList<>();
+
         storedMoves = new ArrayList<>();
 
         setState(state != null ? state : DEFAULT_BOARD_STATE);
-    }
-
-    public Square getSquareAt(final int x, final int y) {
-        return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
-    }
-
-    public MoveEvent calcCheckOrMate(final Colour color) {
-        for (int i = 0; i < 8; i++) {
-            for (Square sq : state[i]) {
-                // enemy found
-                if (sq.isSettled() && sq.getPiece().getColor() != color) {
-                    Square kingSq = sq.getPiece().getEnemyKing(this, sq);
-                    // enemy is an attacker
-                    if (kingSq != null) {
-                        kingInCheck = true;
-                        kingDefense = getKingDefenseTargets(color, sq, kingSq);
-                        // will be calculated only once so don't worry about...
-                        if (kingDefense.isEmpty() && kingSq.getPiece().getValidTargets(this, kingSq).isEmpty()) {
-                            return MoveEvent.CHECKMATE;
-                        }
-                        return MoveEvent.CHECK;
-                    }
-                }
-            }
-        }
-        if (!canMove(color.toggle())) {
-            return MoveEvent.STALEMATE;
-        }
-        return MoveEvent.NONE;
-    }
-
-    public List<Square> getKingDefenseTargets(final Colour color, final Square enemySq, final Square kingSq) {
-        List<Square> defense = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            for (Square sq : state[i]) {
-                if (sq.isSettled() && sq.getPiece().getColor() == color && !sq.getPiece().isKing()) {
-                    defense.addAll(sq.getPiece().getKingDefenseTargets(this, sq, enemySq, kingSq));
-                }
-            }
-        }
-        return defense;
-    }
-
-    public boolean isKingInCheck(final Colour color) {
-        return color == turn && kingInCheck;
-    }
-
-    public List<Square> getKingDefenseIntersect(final Square square) {
-        return square.getPiece().getValidTargets(this, square).stream().
-                filter(sq -> kingDefense.contains(sq)).collect(Collectors.toList());
-    }
-
-    public List<Square> getValidTargets(final Board board, final Square square) {
-        Colour pieceColor = square.getPiece().getColor();
-        if (turn != pieceColor) {
-            return new ArrayList<>();
-        }
-        if (isKingInCheck(pieceColor)) {
-            return getKingDefenseIntersect(square);
-        }
-        return square.getPiece().getValidTargets(this, square);
-    }
-
-    public EnumSet<MoveEvent> makeMove(final Square src, final Square dst, final boolean storeMove) {
-        if (getValidTargets(this, src).isEmpty()) {
-            return EnumSet.of(MoveEvent.NONE);
-        }
-        if (storeMove) {
-            storedMoves.add(new Move(new Square(src), new Square(dst)));
-        }
-        EnumSet<MoveEvent> events = EnumSet.noneOf(MoveEvent.class);
-        Piece piece = src.getPiece();
-        if (!piece.hasMoved()) {
-            piece.setHasMoved(true);
-        }
-        if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
-            src.setPiece(null);
-            piece = new Queen(piece.getColor());
-            dst.setPiece(piece);
-            events.add(MoveEvent.PROMOTION);
-        }
-        else if (piece.hasSameColor(dst.getPiece())) {
-            src.setPiece(dst.getPiece());
-            dst.setPiece(piece);
-            ((King) piece).setDidCastling(true);
-            events.add(MoveEvent.CASTLING);
-        } else {
-            events.add(MoveEvent.MOVE);
-            dst.setPiece(piece);
-            src.setPiece(null);
-        }
-        kingInCheck = false;
-        events.add(calcCheckOrMate(piece.getColor().toggle()));
-        turn = turn.toggle();
-        return events;
     }
 
     public Colour getTurn() {
         return turn;
     }
 
-    public void unmakeMove() {
+    public Square getKingSq() {
+        return turn == Colour.BLACK ? blackKingSq : whiteKingSq;
+    }
+
+    private void setKingSq(Square square) {
+        if (square.getPiece().getColor() == Colour.BLACK) {
+            blackKingSq = square;
+        } else {
+            whiteKingSq = square;
+        }
+    }
+
+    public List<Square> getAllyPiecesSq() {
+        return turn == Colour.BLACK ? blackPiecesSq : whitePiecesSq;
+    }
+
+    public List<Square> getEnemyPiecesSq() {
+        return turn == Colour.BLACK ? whitePiecesSq : blackPiecesSq;
+    }
+
+    public Square getSquareAt(final int x, final int y) {
+        return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
+    }
+
+    public List<Move> getPossibleMoves() {
+        isCheck = false;
+        Square kingSq = getKingSq();
+        List<Square> allyPiecesSq = getAllyPiecesSq();
+        List<Square> enemyPiecesSq = getEnemyPiecesSq();
+
+        List<Move> moves = kingSq.getPiece().getValidTargets(this, kingSq).stream()
+                        .map(sq -> new Move(kingSq, sq))
+                        .collect(Collectors.toList());
+
+        List<Square> enemyTargets = new ArrayList<>();
+        for (Square esq : enemyPiecesSq) {
+            Piece enemy = esq.getPiece();
+            if (enemy.getValidTargets(this, esq).contains(kingSq)) {
+                if (enemy.isKnight()) {
+                    enemyTargets.add(esq);
+                } else {
+                    enemyTargets.addAll(Target.getTargetsInDirection(this, esq, enemy.getColor(),
+                                                                     Direction.from2Squares(esq, kingSq)));
+                }
+                isCheck = true;
+                break;
+            }
+        }
+        for (Square asq : allyPiecesSq) {
+            for (Square t : asq.getPiece().getValidTargets(this, asq)) {
+                if (isCheck) {
+                    if (enemyTargets.contains(t)) {
+                        moves.add(new Move(asq, t));
+                    }
+                } else {
+                    moves.add(new Move(asq, t));
+                }
+            }
+        }
+        return moves;
+    }
+
+    public List<Square> getPossibleTargets(Square src) {
+        return getPossibleMoves().stream().filter(m -> m.getSrc().equals(src))
+                .map(Move::getDst)
+                .collect(Collectors.toList());
+    }
+
+    public MoveEvent calcCheckOrMate() {
+        List<Move> allPossibleMoves = getPossibleMoves();
+        if (isCheck) {
+            if (allPossibleMoves.isEmpty()) {
+                return MoveEvent.CHECKMATE;
+            }
+            return MoveEvent.CHECK;
+        }
+        if (allPossibleMoves.isEmpty()) {
+            return MoveEvent.STALEMATE;
+        }
+        return MoveEvent.NONE;
+    }
+
+    public EnumSet<MoveEvent> makeMove(final Square src, final Square dst) {
+        EnumSet<MoveEvent> events = EnumSet.noneOf(MoveEvent.class);
+
+        storeMove(src, dst);
+        Piece piece = src.getPiece();
+        if (!piece.hasMoved()) {
+            piece.setHasMoved(true);
+        }
+        if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
+            promote(src, dst);
+            events.add(MoveEvent.PROMOTION);
+        }
+        else if (piece.hasSameColor(dst.getPiece())) {
+            castle(src, dst);
+            events.add(MoveEvent.CASTLING);
+        } else {
+            move(src, dst);
+            events.add(MoveEvent.MOVE);
+        }
+        // set king square
+        if (dst.getPiece().isKing()) {
+            setKingSq(dst);
+        }
+        // does check/mate occur if we move? - If yes, restore old state and return
+        //turn = turn.toggle();
+        if (calcCheckOrMate().isCheckOrMate()) {
+            restoreMove();
+            events.clear();
+            events.add(MoveEvent.NONE);
+            //turn = turn.toggle();
+            return events;
+        }
+        // calc check/mate for enemy and return result
+        turn = turn.toggle();
+        events.add(calcCheckOrMate());
+        return events;
+    }
+
+    // NOTE: we have to update board!? - No, because we operate with squares on board!
+    private void promote(Square src, Square dst) {
+        getAllyPiecesSq().remove(src);
+        getAllyPiecesSq().add(dst);
+        if (dst.isSettled()) {
+            getEnemyPiecesSq().remove(dst);
+        }
+        src.setPiece(null);
+        dst.setPiece(new Queen(turn));
+    }
+
+    private void castle(Square src, Square dst) {
+        Piece piece = src.getPiece();;
+        src.setPiece(dst.getPiece());
+        dst.setPiece(piece);
+        ((King) piece).setDidCastling(true);
+    }
+
+    private void move(Square src, Square dst) {
+        getAllyPiecesSq().remove(src);
+        getAllyPiecesSq().add(dst);
+        if (dst.isSettled()) {
+            getEnemyPiecesSq().remove(dst);
+        }
+        dst.setPiece(src.getPiece());
+        src.setPiece(null);
+    }
+
+    private void storeMove(Square src, Square dst) {
+        storedMoves.add(new Move(new Square(src), new Square(dst)));
+    }
+
+    public void restoreMove() {
         if (storedMoves.isEmpty()) return;
-
         int i = storedMoves.size()-1;
-        Move lastMove = storedMoves.get(i);
-        Square src = lastMove.getSrc();
-        Square dst = lastMove.getDst();
-
-        state[src.getX()][src.getY()].setPiece(state[dst.getX()][dst.getY()].getPiece());
-        state[dst.getX()][dst.getY()].setPiece(null);
-
+        Move move = storedMoves.get(i);
         storedMoves.remove(i);
+
+        Square srcCp = move.getSrc();
+        Square dstCp = move.getDst();
+        Piece pieceCp = srcCp.getPiece();
+
+        // reverse turn
+        turn = turn.toggle();
+
+        Square src = getSquareAt(srcCp.getX(), srcCp.getY());
+        Square dst = getSquareAt(dstCp.getX(), dstCp.getY());
+
+        // reverse castling (use copies, cause of rest attributes like hasMoved!)
+        if (pieceCp.hasSameColor(dstCp.getPiece())) {
+            Piece tmp = srcCp.getPiece();
+            srcCp.setPiece(dstCp.getPiece());
+            dstCp.setPiece(tmp);
+        }
+        // reverse move & promotion
+        else {
+            // restore enemy piece
+            if (dstCp.isSettled()) {
+                getEnemyPiecesSq().add(dst);
+                dst.setPiece(dstCp.getPiece());
+            } else {
+                dst.setPiece(null);
+            }
+            src.setPiece(srcCp.getPiece());
+            getAllyPiecesSq().remove(dst);
+            getAllyPiecesSq().add(src);
+        }
+        if (pieceCp.isKing()) {
+            setKingSq(src);
+        }
     }
 
     public void setState(final Integer[][] newState) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                state[x][y] = new Square(PIECE_MAP.get(newState[x][y]), x, y);
-            }
-        }
-    }
+                Square sq = new Square(PIECE_MAP.get(newState[x][y]), x, y);
+                state[x][y] = sq;
 
-    public boolean canMove(final Colour color) {
-        for (int i = 0; i < 8; i++) {
-            for (Square sq : state[i]) {
-                if (sq.isSettled() && sq.getPiece().getColor() == color &&
-                    !sq.getPiece().getValidTargets(this, sq).isEmpty()) {
-                    return true;
+                Piece pc = sq.getPiece();
+                if (pc == null) continue;
+                if (pc.isKing()) {
+                    setKingSq(sq);
+                    continue;
+                }
+                if (pc.isBlack()) {
+                    blackPiecesSq.add(sq);
+                } else {
+                    whitePiecesSq.add(sq);
                 }
             }
         }
-        return false;
     }
 }
