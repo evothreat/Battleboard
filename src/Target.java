@@ -6,28 +6,30 @@ import java.util.stream.Stream;
 
 public class Target {
 
-    static List<Square> getTargetsInCross(Board board, Square square, Colour color) {
-        return Stream.of(
-                getTargetsInDirection(board, square, color, Direction.N),
-                getTargetsInDirection(board, square, color, Direction.S),
-                getTargetsInDirection(board, square, color, Direction.W),
-                getTargetsInDirection(board, square, color, Direction.E)
-        ).flatMap(Collection::stream).collect(Collectors.toList());
+    static List<Square> getTargetsInCross(Board board, Square square) {
+        List<Square> targets = getTargetsInDirection(board, square, Direction.N);
+        targets.addAll(getTargetsInDirection(board, square, Direction.S));
+        targets.addAll(getTargetsInDirection(board, square, Direction.W));
+        targets.addAll(getTargetsInDirection(board, square, Direction.E));
+        return targets;
     }
 
-    static List<Square> getTargetsInDiagonal(Board board, Square square, Colour color) {
-        return Stream.of(
-                getTargetsInDirection(board, square, color, Direction.NE),
-                getTargetsInDirection(board, square, color, Direction.SE),
-                getTargetsInDirection(board, square, color, Direction.SW),
-                getTargetsInDirection(board, square, color, Direction.NW)
-        ).flatMap(Collection::stream).collect(Collectors.toList());
+    static List<Square> getTargetsInDiagonal(Board board, Square square) {
+        List<Square> targets = getTargetsInDirection(board, square, Direction.NE);
+        targets.addAll(getTargetsInDirection(board, square, Direction.SE));
+        targets.addAll(getTargetsInDirection(board, square, Direction.SW));
+        targets.addAll(getTargetsInDirection(board, square, Direction.NW));
+        return targets;
     }
 
-    static public List<Square> getTargetsInDirection(Board board, Square square, Colour color, Direction dir) {
+    static public List<Square> getTargetsInDirection(Board board, Square square, Direction dir) {
         List<Square> targets = new ArrayList<>();
+
         int currX = square.getX() + dir.getX();
         int currY = square.getY() + dir.getY();
+
+        Colour color = square.getPiece().getColor();
+
         while (currX >= 0 && currX < 8 && currY >= 0 && currY < 8) {
             Square sq = board.getSquareAt(currX, currY);
             targets.add(sq);
@@ -46,12 +48,15 @@ public class Target {
     }
 
     // MAYBE RETURN LAST SQUARE
-    static public Square getNextPieceSqInDirection(Board board, Square src, Colour colour, Direction dir) {
-        int currX = src.getX() + dir.getX();
-        int currY = src.getY() + dir.getY();
+    static public Square getNextPieceSqInDirection(Board board, Square square, Direction dir) {
+        int currX = square.getX() + dir.getX();
+        int currY = square.getY() + dir.getY();
+
+        Colour color = square.getPiece().getColor();
+
         while (currX >= 0 && currX < 8 && currY >= 0 && currY < 8) {
             Square sq = board.getSquareAt(currX, currY);
-            if (sq.isSettled() && sq.getPiece().getColor() == colour) {
+            if (sq.isSettled() && sq.getPiece().getColor() == color) {
                 return sq;
             }
             currX += dir.getX();

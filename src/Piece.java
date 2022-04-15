@@ -39,41 +39,6 @@ abstract public class Piece {
         return other != null && color == other.getColor();
     }
 
-    public Square getEnemyKing(Board board, Square square) {
-        Colour c = square.getPiece().getColor().toggle();
-        return getValidTargets(board, square).stream().filter(sq -> sq.isSettled() &&
-                                                              sq.getPiece().isKing() &&
-                                                              sq.getPiece().getColor() == c).findFirst().orElse(null);
-    }
-
-    public boolean canDefendKing(Board board, Square ownSq, Square enemySq, Square kingSq) {
-        List<Square> ownTargets = getValidTargets(board, ownSq);
-        if (ownTargets.contains(enemySq)) {
-            return true;
-        }
-        if (enemySq.getPiece().isKnight()) {
-            return false;
-        }
-        Direction enemyToKingDir = Direction.from2Squares(enemySq, kingSq);
-        List<Square> enemyToKingTargets = Target.getTargetsInDirection(board, enemySq, color.toggle(), enemyToKingDir);
-        return enemyToKingTargets.stream().anyMatch(ownTargets::contains);
-    }
-
-    public List<Square> getKingDefenseTargets(Board board, Square ownSq, Square enemySq, Square kingSq) {
-        List<Square> defense = new ArrayList<>();
-        if (enemySq.getPiece().isKnight()) {
-            return defense;
-        }
-        List<Square> ownTargets = getValidTargets(board, ownSq);
-        List<Square> enemyToKingTargets = Target.getTargetsInDirection(board, enemySq, color.toggle(), Direction.from2Squares(enemySq, kingSq));
-        for (Square ot : ownTargets) {
-            if (ot.equals(enemySq) || enemyToKingTargets.contains(ot)) {
-                defense.add(ot);
-            }
-        }
-        return defense;
-    }
-
     public boolean isKing() {
         return pieceType == PieceType.KING;
     }

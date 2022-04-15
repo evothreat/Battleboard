@@ -22,11 +22,11 @@ public class King extends Piece {
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
         // should be after removeIf, cause target is settled and has same color!
         if (!hasMoved() && !didCastling) {
-            Square sq = Target.getNextPieceSqInDirection(board, square, getColor(), Direction.N);
+            Square sq = Target.getNextPieceSqInDirection(board, square, Direction.N);
             if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
                 targets.add(sq);
             }
-            sq = Target.getNextPieceSqInDirection(board, square, getColor(), Direction.S);
+            sq = Target.getNextPieceSqInDirection(board, square, Direction.S);
             if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
                 targets.add(sq);
             }
