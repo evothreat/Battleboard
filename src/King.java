@@ -22,11 +22,11 @@ public class King extends Piece {
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
         // should be after removeIf, cause target is settled and has same color!
         if (!hasMoved() && !didCastling) {
-            Square sq = Target.getNextPieceSqInDirection(board, square, Direction.N);
+            Square sq = Target.getNextSettledInDirection(board, square, Direction.N);
             if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
                 targets.add(sq);
             }
-            sq = Target.getNextPieceSqInDirection(board, square, Direction.S);
+            sq = Target.getNextSettledInDirection(board, square, Direction.S);
             if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
                 targets.add(sq);
             }
@@ -34,28 +34,26 @@ public class King extends Piece {
         // add own square, to check whether king is under attack
         targets.add(square);
 
-        boolean w = getColor() == Colour.WHITE;
-        Direction straight = w ? Direction.E : Direction.W;
+        boolean w = getColor().bool();
+        Direction direct = w ? Direction.E : Direction.W;
 
-        for (int i = 0; i < 8 && !targets.isEmpty(); i++) {                                 // isEmpty() for optimization
-            for (int j = 0; j < 8; j++) {
-                Square src = board.getSquareAt(i, j);
-                Piece p = src.getPiece();
-                if (p == null || hasSameColor(p)) continue;
-                if (p.isKing()) {
-                    getTargets(board, src).forEach(targets::remove);
-                    continue;
-                }
-                List<Square> enemyTargets = p.getValidTargets(board, src);
-                if (p.isPawn()) {
-                    enemyTargets.removeIf(dst -> Direction.from2Squares(src, dst) == straight);
-                    enemyTargets.add(board.getSquareAt(w ? src.getX()+1 : src.getX()-1, src.getY()-1));
-                    enemyTargets.add(board.getSquareAt(w ? src.getX()+1 : src.getX()-1, src.getY()+1));
-                }
-                enemyTargets.forEach(t -> {
-                    if (t != null) targets.remove(t);
-                });
+        // NOTE: add getEnemyPieces by color!
+        for (Square esq : board.getEnemyPiecesSq()) {
+            Piece piece = esq.getPiece();
+            if (piece == null) continue;
+            if (piece.isKing()) {
+                getTargets(board, esq).forEach(targets::remove);
+                continue;
             }
+            List<Square> enemyTargets = piece.getValidTargets(board, esq);
+            if (piece.isPawn()) {
+                enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst) == direct);
+                enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()-1));
+                enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()+1));
+            }
+            enemyTargets.forEach(t -> {
+                if (t != null) targets.remove(t);
+            });
         }
         for (int i = targets.size() - 1; i >= 0; i--) {
             Piece piece = targets.get(i).getPiece();

@@ -9,4 +9,8 @@ public enum Colour {
     public int sign() {
         return this == BLACK ? -1 : 1;
     }
+
+    public boolean bool() {
+        return this == WHITE;
+    }
 }

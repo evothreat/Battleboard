@@ -27,10 +27,6 @@ public enum Direction {
         return y;
     }
 
-    static public Direction from2Points(int x1, int y1, int x2, int y2) {
-        return Direction.fromValues(x2 - x1, y2 - y1);
-    }
-
     static public Direction from2Squares(Square sq1, Square sq2)  {
         return Direction.fromValues(sq2.getX() - sq1.getX(), sq2.getY() - sq1.getY());
     }

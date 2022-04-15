@@ -149,12 +149,10 @@ public class Board {
             setKingSq(dst);
         }
         // does check/mate occur if we move? - If yes, restore old state and return
-        //turn = turn.toggle();
         if (calcCheckOrMate().isCheckOrMate()) {
             restoreMove();
             events.clear();
             events.add(MoveEvent.NONE);
-            //turn = turn.toggle();
             return events;
         }
         // calc check/mate for enemy and return result

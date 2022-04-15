@@ -1,11 +1,8 @@
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Target {
-
+    // NOTE: maybe optimize...
     static List<Square> getTargetsInCross(Board board, Square square) {
         List<Square> targets = getTargetsInDirection(board, square, Direction.N);
         targets.addAll(getTargetsInDirection(board, square, Direction.S));
@@ -48,7 +45,7 @@ public class Target {
     }
 
     // MAYBE RETURN LAST SQUARE
-    static public Square getNextPieceSqInDirection(Board board, Square square, Direction dir) {
+    static public Square getNextSettledInDirection(Board board, Square square, Direction dir) {
         int currX = square.getX() + dir.getX();
         int currY = square.getY() + dir.getY();
 
