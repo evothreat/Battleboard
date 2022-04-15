@@ -21,12 +21,11 @@ public class Pawn extends Piece {
         boolean w = getColor().bool();
         // index out of range not possible, cause pawn becomes queen
         Square sq1 = board.getSquareAt(w ? x-1 : x+1, y);
-        boolean sq1IsSameColor = hasSameColor(sq1.getPiece());
-        if (!sq1.isSettled() && !sq1IsSameColor) {
+        if (!sq1.isSettled()) {
             targets.add(sq1);
         }
         Square sq2 = board.getSquareAt(w ? x-2 : x+2, y);
-        if (x == (w ? 6 : 1) && !sq2.isSettled() && !hasSameColor(sq1.getPiece()) && !sq1IsSameColor) {
+        if (x == (w ? 6 : 1) && !sq1.isSettled() && !sq2.isSettled()) {
             targets.add(sq2);
         }
         Square sq3 = board.getSquareAt(w ? x-1 : x+1, y-1);
