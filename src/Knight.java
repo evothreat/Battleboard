@@ -3,8 +3,8 @@ import java.util.List;
 
 public class Knight extends Piece {
 
-    public Knight(Colour color) {
-        super(PieceType.KNIGHT, color, color == Colour.BLACK ? -30 : 30, false);
+    public Knight(Colour color, int weight) {
+        super(PieceType.KNIGHT, color, weight, false);
     }
 
     public Knight(Knight other) {

@@ -3,22 +3,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Board {
-
-    static final Map<Integer, Piece> PIECE_MAP  = new HashMap<>() {{
-        put(-6, new King(Colour.BLACK));
-        put(-5, new Queen(Colour.BLACK));
-        put(-4, new Rook(Colour.BLACK));
-        put(-3, new Bishop(Colour.BLACK));
-        put(-2, new Knight(Colour.BLACK));
-        put(-1, new Pawn(Colour.BLACK));
-        put(0, null);
-        put(6, new King(Colour.WHITE));
-        put(5, new Queen(Colour.WHITE));
-        put(4, new Rook(Colour.WHITE));
-        put(3, new Bishop(Colour.WHITE));
-        put(2, new Knight(Colour.WHITE));
-        put(1, new Pawn(Colour.WHITE));
-    }};
     static final Integer[][] DEFAULT_BOARD_STATE = {
             {-4, -2, -3, -5, -6, -3, -2, -4},
             {-1, -1, -1, -1, -1, -1, -1, -1},
@@ -188,7 +172,7 @@ public class Board {
             getEnemyPiecesSq().remove(dst);
         }
         src.setPiece(null);
-        dst.setPiece(new Queen(turn));
+        dst.setPiece(new Queen(turn, turn.sign() * PieceUtil.QUEEN_WEIGHT));
     }
 
     private void castle(Square src, Square dst) {
@@ -255,7 +239,7 @@ public class Board {
     public void setState(final Integer[][] newState) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                Square sq = new Square(PIECE_MAP.get(newState[x][y]), x, y);
+                Square sq = new Square(PieceUtil.intToPiece(newState[x][y]), x, y);
                 state[x][y] = sq;
 
                 Piece pc = sq.getPiece();

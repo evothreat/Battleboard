@@ -5,4 +5,8 @@ public enum Colour {
     public Colour toggle() {
         return this == BLACK ? WHITE : BLACK;
     }
+
+    public int sign() {
+        return this == BLACK ? -1 : 1;
+    }
 }

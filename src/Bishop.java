@@ -2,8 +2,8 @@ import java.util.List;
 
 public class Bishop extends Piece {
 
-    public Bishop(Colour color) {
-        super(PieceType.BISHOP, color, color == Colour.BLACK ? -30 : 30, false);
+    public Bishop(Colour color, int weight) {
+        super(PieceType.BISHOP, color, weight, false);
     }
 
     public Bishop(Bishop other) {

@@ -5,8 +5,8 @@ import java.util.List;
 // after move check whether pawn became queen!
 public class Pawn extends Piece {
 
-    public Pawn(Colour color) {
-        super(PieceType.PAWN, color, color == Colour.BLACK ? -10 : 10, false);
+    public Pawn(Colour color, int weight) {
+        super(PieceType.PAWN, color, weight, false);
     }
 
     public Pawn(Pawn other) {

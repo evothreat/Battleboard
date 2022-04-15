@@ -6,8 +6,8 @@ public class King extends Piece {
 
     private boolean didCastling;
 
-    public King(Colour color) {
-        super(PieceType.KING, color, color == Colour.BLACK ? -900 : 900, false);
+    public King(Colour color, int weight) {
+        super(PieceType.KING, color, weight, false);
     }
 
     public King(King other) {
