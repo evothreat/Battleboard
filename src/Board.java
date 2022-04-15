@@ -49,7 +49,15 @@ public class Board {
     }
 
     private void setKingSq(Square square) {
-        if (square.getPiece().getColor() == Colour.BLACK) {
+        if (turn == Colour.BLACK) {
+            blackKingSq = square;
+        } else {
+            whiteKingSq = square;
+        }
+    }
+
+    private void setKingSq(Colour color, Square square) {
+        if (color == Colour.BLACK) {
             blackKingSq = square;
         } else {
             whiteKingSq = square;
@@ -145,19 +153,16 @@ public class Board {
             move(src, dst);
             events.add(MoveEvent.MOVE);
         }
-        // set king square
-        if (dst.getPiece().isKing()) {
-            setKingSq(dst);
-        }
         // does check/mate occur if we move? - If yes, restore old state and return
         if (calcCheckOrMate().isCheckOrMate()) {
+            // we have to try again, so our turn
             restoreMove();
             events.clear();
             events.add(MoveEvent.NONE);
             return events;
         }
-        // calc check/mate for enemy and return result
         turn = turn.toggle();
+        // calc check/mate for enemy and return result
         events.add(calcCheckOrMate());
         return events;
     }
@@ -178,11 +183,16 @@ public class Board {
         src.setPiece(dst.getPiece());
         dst.setPiece(piece);
         ((King) piece).setDidCastling(true);
+        setKingSq(dst);
     }
 
     private void move(Square src, Square dst) {
-        getAllyPiecesSq().remove(src);
-        getAllyPiecesSq().add(dst);
+        if (src.getPiece().isKing()) {
+            setKingSq(dst);
+        } else {
+            getAllyPiecesSq().remove(src);
+            getAllyPiecesSq().add(dst);
+        }
         if (dst.isSettled()) {
             getEnemyPiecesSq().remove(dst);
         }
@@ -205,7 +215,7 @@ public class Board {
         Piece pieceCp = srcCp.getPiece();
 
         // reverse turn
-        turn = turn.toggle();
+        turn = pieceCp.getColor();
 
         Square src = getSquareAt(srcCp.getX(), srcCp.getY());
         Square dst = getSquareAt(dstCp.getX(), dstCp.getY());
@@ -226,11 +236,13 @@ public class Board {
                 dst.setPiece(null);
             }
             src.setPiece(srcCp.getPiece());
-            getAllyPiecesSq().remove(dst);
-            getAllyPiecesSq().add(src);
-        }
-        if (pieceCp.isKing()) {
-            setKingSq(src);
+            if (pieceCp.isKing()) {
+                // may cause problems, so pay attention...
+                setKingSq(src);
+            } else {
+                getAllyPiecesSq().remove(dst);
+                getAllyPiecesSq().add(src);
+            }
         }
     }
 
@@ -243,7 +255,7 @@ public class Board {
                 Piece pc = sq.getPiece();
                 if (pc == null) continue;
                 if (pc.isKing()) {
-                    setKingSq(sq);
+                    setKingSq(pc.getColor(), sq);
                     continue;
                 }
                 if (pc.isBlack()) {
