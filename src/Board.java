@@ -85,6 +85,7 @@ public class Board {
                 if (enemy.isKnight()) {
                     enemyTargets.add(esq);
                 } else {
+                    enemyTargets.add(esq);  // add attacker too
                     enemyTargets.addAll(Target.getTargetsInDirection(this, esq, Direction.from2Squares(esq, kingSq)));
                 }
                 isCheck = true;
