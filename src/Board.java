@@ -19,43 +19,33 @@ public class Board {
         put(2, new Knight(Colour.WHITE));
         put(1, new Pawn(Colour.WHITE));
     }};
+    static final Integer[][] DEFAULT_BOARD_STATE = {
+            {-4, -2, -3, -5, -6, -3, -2, -4},
+            {-1, -1, -1, -1, -1, -1, -1, -1},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1},
+            {4, 2, 3, 5, 6, 3, 2, 4}
+    };
 
     private final Square[][] state;
+
     private Colour turn;
+
     private List<Square> kingDefense;
     private boolean kingInCheck;
 
     private final List<Move> storedMoves;
 
     public Board(final Integer[][] state, final Colour turn) {
-        storedMoves = new ArrayList<>();
-        this.turn = turn;
         this.state = new Square[8][8];
-        if (state != null) {
-            setState(state);
-            return;
-        }
-        for (int x = 0; x < 8; x++) {
-            Colour side = x < 4 ? Colour.BLACK : Colour.WHITE;
-            if (x == 0 || x == 7) {
-                this.state[x][0] = new Square(new Rook(side), x, 0);
-                this.state[x][1] = new Square(new Knight(side), x, 1);
-                this.state[x][2] = new Square(new Bishop(side), x, 2);
-                this.state[x][3] = new Square(new Queen(side), x, 3);
-                this.state[x][4] = new Square(new King(side), x, 4);
-                this.state[x][5] = new Square(new Bishop(side), x, 5);
-                this.state[x][6] = new Square(new Knight(side), x, 6);
-                this.state[x][7] = new Square(new Rook(side), x, 7);
-                continue;
-            }
-            for (int y = 0; y < 8; y++) {
-                if (x == 1 || x == 6) {
-                    this.state[x][y] = new Square(new Pawn(side), x, y);
-                    continue;
-                }
-                this.state[x][y] = new Square(null, x, y);
-            }
-        }
+        this.turn = turn;
+
+        storedMoves = new ArrayList<>();
+
+        setState(state != null ? state : DEFAULT_BOARD_STATE);
     }
 
     public Square getSquareAt(final int x, final int y) {
@@ -99,16 +89,16 @@ public class Board {
         return defense;
     }
 
-    public boolean isKingInCheck(Colour color) {
+    public boolean isKingInCheck(final Colour color) {
         return color == turn && kingInCheck;
     }
 
-    public List<Square> getKingDefenseIntersect(Square square) {
+    public List<Square> getKingDefenseIntersect(final Square square) {
         return square.getPiece().getValidTargets(this, square).stream().
                 filter(sq -> kingDefense.contains(sq)).collect(Collectors.toList());
     }
 
-    public List<Square> getValidTargets(Board board, Square square) {
+    public List<Square> getValidTargets(final Board board, final Square square) {
         Colour pieceColor = square.getPiece().getColor();
         if (turn != pieceColor) {
             return new ArrayList<>();
