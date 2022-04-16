@@ -24,7 +24,7 @@ public class Board {
     private Square whiteKingSq;
     private final List<Square> whitePiecesSq;
 
-    private boolean isCheck;
+    private boolean inCheck;
 
     private final List<Move> storedMoves;
 
@@ -76,16 +76,13 @@ public class Board {
         return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
-    public List<Move> getPossibleMoves() {
-        isCheck = false;
+    public List<Move> getPossibleMoves(Square source) {
+        inCheck = false;
         Square kingSq = getKingSq();
         List<Square> allyPiecesSq = getAllyPiecesSq();
         List<Square> enemyPiecesSq = getEnemyPiecesSq();
 
-        List<Move> moves = kingSq.getPiece().getValidTargets(this, kingSq).stream()
-                        .map(sq -> new Move(kingSq, sq))
-                        .collect(Collectors.toList());
-
+        // find attacker and their targets
         List<Square> enemyTargets = new ArrayList<>();
         for (Square esq : enemyPiecesSq) {
             Piece enemy = esq.getPiece();
@@ -93,16 +90,35 @@ public class Board {
                 if (enemy.isKnight()) {
                     enemyTargets.add(esq);
                 } else {
-                    enemyTargets.add(esq);  // add attacker too
+                    enemyTargets.add(esq);
                     enemyTargets.addAll(Target.getTargetsInDirection(this, esq, Direction.from2Squares(esq, kingSq)));
                 }
-                isCheck = true;
+                inCheck = true;
                 break;
             }
         }
+        // NOTE: for optimization purpose, we filter steps that will anyway cause check...
+
+        if (source != null) {
+            List<Move> moves = new ArrayList<>();
+            for (Square t : source.getPiece().getValidTargets(this, source)) {
+                if (inCheck) {
+                    if (enemyTargets.contains(t)) {
+                        moves.add(new Move(source, t));
+                    }
+                } else {
+                    moves.add(new Move(source, t));
+                }
+            }
+            return moves;
+        }
+        List<Move> moves = kingSq.getPiece().getValidTargets(this, kingSq).stream()
+                .map(sq -> new Move(kingSq, sq))
+                .collect(Collectors.toList());
+
         for (Square asq : allyPiecesSq) {
             for (Square t : asq.getPiece().getValidTargets(this, asq)) {
-                if (isCheck) {
+                if (inCheck) {
                     if (enemyTargets.contains(t)) {
                         moves.add(new Move(asq, t));
                     }
@@ -116,36 +132,38 @@ public class Board {
 
     public List<Square> getPossibleTargets(Square src) {
         List<Square> targets = new ArrayList<>();
-        for (Move m : getPossibleMoves()) {
-            if (m.getSrc().equals(src)) {                   // TODO: change to getPossibleMoves for specific source
-                if (makeMove(m.getSrc(), m.getDst())) {
-                    restoreMove();
-                    targets.add(m.getDst());
-                }
+        for (Move m : getPossibleMoves(src)) {
+            if (makeMove(m.getSrc(), m.getDst())) {
+                restoreMove();
+                targets.add(m.getDst());
             }
         }
         return targets;
     }
 
-    public MoveEvent calcCheckOrMate() {
-        List<Move> allPossibleMoves = getPossibleMoves();
-        if (isCheck) {
-            if (allPossibleMoves.isEmpty()) {
-                return MoveEvent.CHECKMATE;
+    public MateType calcCheckOrMate() {
+        List<Move> possibleMoves = getPossibleMoves(null);
+        // if in check
+        if (inCheck) {
+            // if no available moves - checkmate
+            if (possibleMoves.isEmpty()) {
+                return MateType.CHECKMATE;
             }
-            return MoveEvent.CHECK;
+            // test whether all moves are valid, if any is valid - check
+            for (Move m : possibleMoves) {
+                if (makeMove(m.getSrc(), m.getDst())) {
+                    restoreMove();
+                    return MateType.CHECK;
+                }
+            }
+            // no moves were valid - checkmate
+            return MateType.CHECKMATE;
         }
-        if (allPossibleMoves.isEmpty()) {
-            return MoveEvent.STALEMATE;
+        // no check & no possible moves
+        if (possibleMoves.isEmpty()) {
+            return MateType.STALEMATE;
         }
-        return MoveEvent.NONE;
-    }
-
-    public boolean isCheckmate() {
-        if (isCheck()) {
-
-        }
-        return false;
+        return MateType.NONE;
     }
 
     public boolean isCheck() {

@@ -65,15 +65,20 @@ public class Game {
 
     private void movePiece(Square src, Square dst) {
         Piece piece = src.getPiece();
+        Piece enemy = dst.getPiece();
+
         if (board.makeMove(src, dst)) {
             if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
                 boardUI.deletePiece(src);
-                boardUI.setPieceAt(dst, dst.getPiece());
-            } else if (piece.hasSameColor(dst.getPiece())) {
+                boardUI.setPieceAt(dst, enemy);
+            } else if (piece.hasSameColor(enemy)) {
                 boardUI.swapPieces(src, dst);
             } else {
                 boardUI.movePiece(src, dst);
             }
+        }
+        if (board.isCheck()) {
+            System.out.println("Got CHECK from " + piece.getColor());
         }
         clearSelection();
     }
