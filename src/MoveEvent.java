@@ -1,5 +1,6 @@
 public enum MoveEvent {
     NONE,
+    ILLEGAL,
     MOVE,
     CASTLING,
     PROMOTION,
@@ -13,5 +14,9 @@ public enum MoveEvent {
 
     public boolean isCheckOrMate() {
         return this == CHECK || this == CHECKMATE || this == STALEMATE;
+    }
+
+    public boolean isIllegalMove() {
+        return this == ILLEGAL;
     }
 }

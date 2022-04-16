@@ -64,28 +64,15 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
-        EnumSet<MoveEvent> moveEvents = board.makeMove(src, dst);
-        for (MoveEvent me : moveEvents) {
-            switch (me) {
-                case MOVE:
-                    boardUI.movePiece(src, dst);
-                    break;
-                case CASTLING:
-                    boardUI.swapPieces(src, dst);
-                    break;
-                case PROMOTION:
-                    boardUI.deletePiece(src);
-                    boardUI.setPieceAt(dst, dst.getPiece());
-                    break;
-                case CHECK:
-                    System.out.println("Got CHECK from " + (dst.getPiece().getColor() == Colour.BLACK ? "BLACK" : "WHITE"));
-                    break;
-                case CHECKMATE:
-                    System.out.println("Got CHECKMATE from " + (dst.getPiece().getColor() == Colour.BLACK ? "BLACK" : "WHITE"));
-                    break;
-                case STALEMATE:
-                    System.out.println("Got STALEMATE from " + (dst.getPiece().getColor() == Colour.BLACK ? "BLACK" : "WHITE"));
-                    break;
+        Piece piece = src.getPiece();
+        if (board.makeMove(src, dst)) {
+            if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
+                boardUI.deletePiece(src);
+                boardUI.setPieceAt(dst, dst.getPiece());
+            } else if (piece.hasSameColor(dst.getPiece())) {
+                boardUI.swapPieces(src, dst);
+            } else {
+                boardUI.movePiece(src, dst);
             }
         }
         clearSelection();

@@ -115,9 +115,16 @@ public class Board {
     }
 
     public List<Square> getPossibleTargets(Square src) {
-        return getPossibleMoves().stream().filter(m -> m.getSrc().equals(src))
-                .map(Move::getDst)
-                .collect(Collectors.toList());
+        List<Square> targets = new ArrayList<>();
+        for (Move m : getPossibleMoves()) {
+            if (m.getSrc().equals(src)) {                   // TODO: change to getPossibleMoves for specific source
+                if (makeMove(m.getSrc(), m.getDst())) {
+                    restoreMove();
+                    targets.add(m.getDst());
+                }
+            }
+        }
+        return targets;
     }
 
     public MoveEvent calcCheckOrMate() {
@@ -134,9 +141,24 @@ public class Board {
         return MoveEvent.NONE;
     }
 
-    public EnumSet<MoveEvent> makeMove(final Square src, final Square dst) {
-        EnumSet<MoveEvent> events = EnumSet.noneOf(MoveEvent.class);
+    public boolean isCheckmate() {
+        if (isCheck()) {
 
+        }
+        return false;
+    }
+
+    public boolean isCheck() {
+        Square kingSq = getKingSq();
+        for (Square esq : getEnemyPiecesSq()) {
+            if (esq.getPiece().getValidTargets(this, esq).contains(kingSq)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean makeMove(final Square src, final Square dst) {
         storeMove(src, dst);
         Piece piece = src.getPiece();
         if (!piece.hasMoved()) {
@@ -144,27 +166,18 @@ public class Board {
         }
         if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
             promote(src, dst);
-            events.add(MoveEvent.PROMOTION);
         }
         else if (piece.hasSameColor(dst.getPiece())) {
             castle(src, dst);
-            events.add(MoveEvent.CASTLING);
         } else {
             move(src, dst);
-            events.add(MoveEvent.MOVE);
         }
-        // does check/mate occur if we move? - If yes, restore old state and return
-        if (calcCheckOrMate().isCheckOrMate()) {
-            // we have to try again, so our turn
+        if (isCheck()) {
             restoreMove();
-            events.clear();
-            events.add(MoveEvent.NONE);
-            return events;
+            return false;
         }
         turn = turn.toggle();
-        // calc check/mate for enemy and return result
-        events.add(calcCheckOrMate());
-        return events;
+        return true;
     }
 
     // NOTE: we have to update board!? - No, because we operate with squares on board!
@@ -183,12 +196,12 @@ public class Board {
         src.setPiece(dst.getPiece());
         dst.setPiece(piece);
         ((King) piece).setDidCastling(true);
-        setKingSq(dst);
+        setKingSq(piece.getColor(), dst);
     }
 
     private void move(Square src, Square dst) {
         if (src.getPiece().isKing()) {
-            setKingSq(dst);
+            setKingSq(src.getPiece().getColor(), dst);
         } else {
             getAllyPiecesSq().remove(src);
             getAllyPiecesSq().add(dst);
