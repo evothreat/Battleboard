@@ -11,7 +11,7 @@ public class Board {
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 1, 1, 1, 1},
-            {4, 2, 3, 5, 6, 3, 2, 4}
+            {4, 0, 0, 0, 6, 0, 0, 4}
     };
 
     private final Square[][] state;
@@ -76,6 +76,14 @@ public class Board {
         return 8 > x && x >= 0 && 8 > y && y >= 0 ? state[x][y] : null;
     }
 
+    public boolean isValidMove(Square src, Square dst) {
+        if (makeMove(src, dst)) {
+            restoreMove();
+            return true;
+        }
+        return false;
+    }
+
     public List<Move> getPossibleMoves(Square source) {
         inCheck = false;
 
@@ -96,31 +104,29 @@ public class Board {
             }
         }
         // NOTE: for optimization purpose, we filter steps that will anyway cause check...
-
+        List<Move> moves = new ArrayList<>();
         if (source != null) {
-            List<Move> moves = new ArrayList<>();
             for (Square t : source.getPiece().getValidTargets(this, source)) {
                 if (inCheck) {
-                    if (enemyTargets.contains(t)) {
+                    if (enemyTargets.contains(t) && isValidMove(source, t)) {
                         moves.add(new Move(source, t));
                     }
-                } else {
+                } else if (isValidMove(source, t)) {
                     moves.add(new Move(source, t));
                 }
             }
             return moves;
         }
-        List<Move> moves = kingSq.getPiece().getValidTargets(this, kingSq).stream()
-                .map(sq -> new Move(kingSq, sq))
-                .collect(Collectors.toList());
-
+        for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
+            moves.add(new Move(kingSq, t));
+        }
         for (Square asq : getAllyPiecesSq()) {
             for (Square t : asq.getPiece().getValidTargets(this, asq)) {
                 if (inCheck) {
-                    if (enemyTargets.contains(t)) {
+                    if (enemyTargets.contains(t) && isValidMove(asq, t)) {
                         moves.add(new Move(asq, t));
                     }
-                } else {
+                } else if (isValidMove(asq, t)) {
                     moves.add(new Move(asq, t));
                 }
             }
@@ -131,35 +137,21 @@ public class Board {
     public List<Square> getPossibleTargets(Square src) {
         List<Square> targets = new ArrayList<>();
         for (Move m : getPossibleMoves(src)) {
-            if (makeMove(m.getSrc(), m.getDst())) {
-                restoreMove();
-                targets.add(m.getDst());
-            }
+            targets.add(m.getDst());
         }
         return targets;
     }
 
     public MateType calcCheckOrMate() {
         List<Move> possibleMoves = getPossibleMoves(null);
-        // if in check
-        if (inCheck) {
-            // if no available moves - checkmate
-            if (possibleMoves.isEmpty()) {
+        if (possibleMoves.isEmpty()) {
+            if (inCheck) {
                 return MateType.CHECKMATE;
             }
-            // test whether all moves are valid, if any is valid - check
-            for (Move m : possibleMoves) {
-                if (makeMove(m.getSrc(), m.getDst())) {
-                    restoreMove();
-                    return MateType.CHECK;
-                }
-            }
-            // no moves were valid - checkmate
-            return MateType.CHECKMATE;
-        }
-        // no check & no possible moves
-        if (possibleMoves.isEmpty()) {
             return MateType.STALEMATE;
+        }
+        if (inCheck) {
+            return MateType.CHECK;
         }
         return MateType.NONE;
     }
@@ -198,8 +190,7 @@ public class Board {
 
     // NOTE: we have to update board!? - No, because we operate with squares on board!
     private void promote(Square src, Square dst) {
-        getAllyPiecesSq().remove(src);
-        getAllyPiecesSq().add(dst);
+        replaceSquare(getAllyPiecesSq(), src, dst);
         if (dst.isSettled()) {
             getEnemyPiecesSq().remove(dst);
         }
@@ -208,25 +199,29 @@ public class Board {
     }
 
     private void castle(Square src, Square dst) {
-        Piece piece = src.getPiece();;
+        Piece piece = src.getPiece();
         src.setPiece(dst.getPiece());
         dst.setPiece(piece);
         ((King) piece).setDidCastling(true);
-        setKingSq(piece.getColor(), dst);
+        replaceSquare(getAllyPiecesSq(), dst, src);
+        setKingSq(dst);
     }
 
     private void move(Square src, Square dst) {
         if (src.getPiece().isKing()) {
-            setKingSq(src.getPiece().getColor(), dst);
+            setKingSq(dst);
         } else {
-            getAllyPiecesSq().remove(src);
-            getAllyPiecesSq().add(dst);
+            replaceSquare(getAllyPiecesSq(), src, dst);
         }
         if (dst.isSettled()) {
             getEnemyPiecesSq().remove(dst);
         }
         dst.setPiece(src.getPiece());
         src.setPiece(null);
+    }
+
+    private void replaceSquare(List<Square> squares, Square src, Square dst) {
+        squares.set(squares.indexOf(src), dst);
     }
 
     private void storeMove(Square src, Square dst) {
@@ -251,9 +246,12 @@ public class Board {
 
         // reverse castling (use copies, cause of rest attributes like hasMoved!)
         if (pieceCp.hasSameColor(dstCp.getPiece())) {
-            Piece tmp = srcCp.getPiece();
-            srcCp.setPiece(dstCp.getPiece());
-            dstCp.setPiece(tmp);
+            src.setPiece(srcCp.getPiece());
+            dst.setPiece(dstCp.getPiece());
+            replaceSquare(getAllyPiecesSq(), src, dst);
+            setKingSq(src);
+            // TODO: src - ROOK, dst - KING
+            // TODO: srcCp - KING, dstCp - ROOK
         }
         // reverse move & promotion
         else {
