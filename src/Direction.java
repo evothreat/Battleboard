@@ -27,6 +27,36 @@ public enum Direction {
         return y;
     }
 
+    public boolean isDirect() {
+        return this == N || this == E || this == S || this == W;
+    }
+
+    public boolean isDiagonal() {
+        return this == NE || this == SE || this == SW || this == NW;
+    }
+
+    public Direction flip() {
+        switch (this) {
+            case N:
+                return S;
+            case NE:
+                return SW;
+            case E:
+                return W;
+            case SE:
+                return NW;
+            case S:
+                return N;
+            case SW:
+                return NE;
+            case W:
+                return E;
+            case NW:
+                return SE;
+        }
+        return NONE;
+    }
+
     static public Direction from2Squares(Square sq1, Square sq2)  {
         return Direction.fromValues(sq2.getX() - sq1.getX(), sq2.getY() - sq1.getY());
     }

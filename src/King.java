@@ -35,7 +35,6 @@ public class King extends Piece {
         targets.add(square);
 
         boolean w = getColor().bool();
-        Direction direct = w ? Direction.E : Direction.W;
 
         // NOTE: add getEnemyPieces by color!
         for (Square esq : board.getEnemyPiecesSq()) {
@@ -47,13 +46,18 @@ public class King extends Piece {
             }
             List<Square> enemyTargets = piece.getValidTargets(board, esq);
             if (piece.isPawn()) {
-                enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst) == direct);
+                enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst).isDirect());
                 enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()-1));
                 enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()+1));
             }
-            enemyTargets.forEach(t -> {
-                if (t != null) targets.remove(t);
-            });
+            for (Square t : enemyTargets) {
+                // null check is needed for pawns
+                if (t != null && targets.remove(t)) {
+                    Direction dir = Direction.from2Squares(esq, square);
+                    Square behindSq = board.getSquareAt(square.getX()+dir.getX(), square.getY()+dir.getY());
+                    if (behindSq != null) targets.remove(behindSq);
+                }
+            }
         }
         for (int i = targets.size() - 1; i >= 0; i--) {
             Piece piece = targets.get(i).getPiece();
