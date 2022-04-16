@@ -85,9 +85,15 @@ public class Board {
     }
 
     public List<Move> getPossibleMoves(Square source) {
-        inCheck = false;
-
         Square kingSq = getKingSq();
+        if (source != null && source.equals(kingSq)) {
+            List<Move> moves = new ArrayList<>();
+            for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
+                moves.add(new Move(kingSq, t));
+            }
+            return moves;
+        }
+        inCheck = false;
         // find attacker and their targets
         List<Square> enemyTargets = new ArrayList<>();
         for (Square esq : getEnemyPiecesSq()) {
