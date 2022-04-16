@@ -70,7 +70,7 @@ public class Game {
         if (board.makeMove(src, dst)) {
             if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
                 boardUI.deletePiece(src);
-                boardUI.setPieceAt(dst, enemy);
+                boardUI.setPieceAt(dst, dst.getPiece());
             } else if (piece.hasSameColor(enemy)) {
                 boardUI.swapPieces(src, dst);
             } else {
