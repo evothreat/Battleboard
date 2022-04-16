@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 public class Board {
     static final Integer[][] DEFAULT_BOARD_STATE = {
             {-4, -2, -3, -5, -6, -3, -2, -4},
-            {-1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, 0, 0, 0, 0, -1, -1},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 0, 0, 0, 0, 1, 1},
             {4, 0, 0, 0, 6, 0, 0, 4}
     };
 
@@ -68,8 +68,16 @@ public class Board {
         return turn == Colour.BLACK ? blackPiecesSq : whitePiecesSq;
     }
 
+    public Square getAllyKingSq() {
+        return turn == Colour.BLACK ? blackKingSq : whiteKingSq;
+    }
+
     public List<Square> getEnemyPiecesSq() {
         return turn == Colour.BLACK ? whitePiecesSq : blackPiecesSq;
+    }
+
+    public Square getEnemyKingSq() {
+        return turn == Colour.BLACK ? whiteKingSq : blackKingSq;
     }
 
     public Square getSquareAt(final int x, final int y) {

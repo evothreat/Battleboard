@@ -20,6 +20,8 @@ public class King extends Piece {
         // targets will also contain enemy squares
         List<Square> targets = getTargets(board, square);
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
+        getTargets(board, board.getEnemyKingSq()).forEach(targets::remove);
+
         // should be after removeIf, cause target is settled and has same color!
         if (!hasMoved() && !didCastling) {
             Square sq = Target.getNextSettledInDirection(board, square, Direction.N);
@@ -39,11 +41,6 @@ public class King extends Piece {
         // NOTE: add getEnemyPieces by color!
         for (Square esq : board.getEnemyPiecesSq()) {
             Piece piece = esq.getPiece();
-            if (piece == null) continue;
-            if (piece.isKing()) {
-                getTargets(board, esq).forEach(targets::remove);
-                continue;
-            }
             List<Square> enemyTargets = piece.getValidTargets(board, esq);
             if (piece.isPawn()) {
                 enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst).isDirect());
