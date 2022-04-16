@@ -49,10 +49,11 @@ public class King extends Piece {
                 enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst).isDirect());
                 enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()-1));
                 enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()+1));
+                enemyTargets.forEach(targets::remove);      // check for null?
+                continue;
             }
             for (Square t : enemyTargets) {
-                // null check is needed for pawns
-                if (t != null && targets.remove(t)) {
+                if (targets.remove(t)) {
                     Direction dir = Direction.from2Squares(esq, square);
                     Square behindSq = board.getSquareAt(square.getX()+dir.getX(), square.getY()+dir.getY());
                     if (behindSq != null) targets.remove(behindSq);
