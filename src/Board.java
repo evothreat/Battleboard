@@ -78,13 +78,11 @@ public class Board {
 
     public List<Move> getPossibleMoves(Square source) {
         inCheck = false;
-        Square kingSq = getKingSq();
-        List<Square> allyPiecesSq = getAllyPiecesSq();
-        List<Square> enemyPiecesSq = getEnemyPiecesSq();
 
+        Square kingSq = getKingSq();
         // find attacker and their targets
         List<Square> enemyTargets = new ArrayList<>();
-        for (Square esq : enemyPiecesSq) {
+        for (Square esq : getEnemyPiecesSq()) {
             Piece enemy = esq.getPiece();
             if (enemy.getValidTargets(this, esq).contains(kingSq)) {
                 if (enemy.isKnight()) {
@@ -116,7 +114,7 @@ public class Board {
                 .map(sq -> new Move(kingSq, sq))
                 .collect(Collectors.toList());
 
-        for (Square asq : allyPiecesSq) {
+        for (Square asq : getAllyPiecesSq()) {
             for (Square t : asq.getPiece().getValidTargets(this, asq)) {
                 if (inCheck) {
                     if (enemyTargets.contains(t)) {
