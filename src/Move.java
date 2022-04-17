@@ -1,5 +1,3 @@
-import java.sql.Time;
-
 public class Move {
 
     final private Square src;

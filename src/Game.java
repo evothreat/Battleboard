@@ -2,15 +2,12 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 public class Game {
 
     final private Board board;
     final private BoardUI boardUI;
-
-    final private List<Move> history;
 
     final private ChessAI chessAI;
     final private Player player;
@@ -24,8 +21,6 @@ public class Game {
 
         this.player = player;
         this.chessAI = chessAI;
-
-        this.history = new ArrayList<>();
     }
 
     public void start() {
