@@ -25,7 +25,7 @@ public class Board {
 
     private boolean inCheck;
 
-    private final List<Move> storedMoves;
+    private final ArrayDeque<Move> history;
 
     public Board(final Integer[][] state, final Colour turn) {
         this.state = new Square[8][8];
@@ -34,7 +34,7 @@ public class Board {
         blackPiecesSq = new ArrayList<>();
         whitePiecesSq = new ArrayList<>();
 
-        storedMoves = new ArrayList<>();
+        history = new ArrayDeque<>();
 
         setState(state != null ? state : DEFAULT_BOARD_STATE);
     }
@@ -186,6 +186,7 @@ public class Board {
         }
         if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
             promote(src, dst);
+            // peek()
         }
         else if (piece.hasSameColor(dst.getPiece())) {
             castle(src, dst);
@@ -237,13 +238,12 @@ public class Board {
     }
 
     private void storeMove(Square src, Square dst) {
-        storedMoves.add(new Move(new Square(src), new Square(dst)));
+        history.push(new Move(new Square(src), new Square(dst)));
     }
 
     public void restoreMove() {
-        if (storedMoves.isEmpty()) return;
-        Move move = storedMoves.get(storedMoves.size()-1);
-        storedMoves.remove(storedMoves.size()-1);
+        if (history.isEmpty()) return;
+        Move move = history.pop();
 
         Square srcCp = move.getSrc();
         Square dstCp = move.getDst();
