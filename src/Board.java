@@ -242,9 +242,8 @@ public class Board {
 
     public void restoreMove() {
         if (storedMoves.isEmpty()) return;
-        int i = storedMoves.size()-1;
-        Move move = storedMoves.get(i);
-        storedMoves.remove(i);
+        Move move = storedMoves.get(storedMoves.size()-1);
+        storedMoves.remove(storedMoves.size()-1);
 
         Square srcCp = move.getSrc();
         Square dstCp = move.getDst();
