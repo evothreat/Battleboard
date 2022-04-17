@@ -1,6 +1,5 @@
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Board {
     static final Integer[][] DEFAULT_BOARD_STATE = {
@@ -92,49 +91,48 @@ public class Board {
         return false;
     }
 
-    public List<Move> getPossibleMoves(Square source) {
+    public List<Move> getKingValidMoves() {
         Square kingSq = getKingSq();
-        if (source != null && source.equals(kingSq)) {
-            List<Move> moves = new ArrayList<>();
-            for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
+        List<Move> moves = new ArrayList<>();
+        for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
+            if (makeMove(kingSq, t)) {
+                restoreMove();
                 moves.add(new Move(kingSq, t));
             }
-            return moves;
         }
+        return moves;
+    }
+
+    public List<Move> getValidMoves(Square source) {
+        if (source != null && source.getPiece().isKing()) {
+            return getKingValidMoves();
+        }
+        Square kingSq = getKingSq();
         inCheck = false;
-        // find attacker and their targets
         List<Square> enemyTargets = new ArrayList<>();
         for (Square esq : getEnemyPiecesSq()) {
             Piece enemy = esq.getPiece();
             if (enemy.getValidTargets(this, esq).contains(kingSq)) {
-                if (enemy.isKnight()) {
-                    enemyTargets.add(esq);
-                } else {
-                    enemyTargets.add(esq);
-                    enemyTargets.addAll(Target.getTargetsInDirection(this, esq, Direction.from2Squares(esq, kingSq)));
-                }
                 inCheck = true;
+                enemyTargets.add(esq);
+                if (!enemy.isKnight()) {
+                    enemyTargets.addAll(Target.getTargetsInDirection(this, esq, Direction.from2Squares(esq, kingSq)));
+                    enemyTargets.remove(enemyTargets.size()-1);
+                }
                 break;
             }
         }
         // NOTE: for optimization purpose, we filter steps that will anyway cause check...
-        List<Move> moves = new ArrayList<>();
-        if (source != null) {
-            for (Square t : source.getPiece().getValidTargets(this, source)) {
-                if (inCheck) {
-                    if (enemyTargets.contains(t) && isValidMove(source, t)) {
-                        moves.add(new Move(source, t));
-                    }
-                } else if (isValidMove(source, t)) {
-                    moves.add(new Move(source, t));
-                }
-            }
-            return moves;
+        List<Move> moves;
+        List<Square> allyPiecesSq;
+        if (source == null) {
+            moves = getKingValidMoves();
+            allyPiecesSq = getAllyPiecesSq();
+        } else {
+            moves = new ArrayList<>();
+            allyPiecesSq = List.of(source);
         }
-        for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
-            moves.add(new Move(kingSq, t));
-        }
-        for (Square asq : getAllyPiecesSq()) {
+        for (Square asq : allyPiecesSq) {
             for (Square t : asq.getPiece().getValidTargets(this, asq)) {
                 if (inCheck) {
                     if (enemyTargets.contains(t) && isValidMove(asq, t)) {
@@ -150,15 +148,15 @@ public class Board {
 
     public List<Square> getPossibleTargets(Square src) {
         List<Square> targets = new ArrayList<>();
-        for (Move m : getPossibleMoves(src)) {
+        for (Move m : getValidMoves(src)) {
             targets.add(m.getDst());
         }
         return targets;
     }
 
     public MateType calcCheckOrMate() {
-        List<Move> possibleMoves = getPossibleMoves(null);
-        if (possibleMoves.isEmpty()) {
+        List<Move> validMoves = getValidMoves(null);
+        if (validMoves.isEmpty()) {
             if (inCheck) {
                 return MateType.CHECKMATE;
             }
@@ -264,8 +262,8 @@ public class Board {
             dst.setPiece(dstCp.getPiece());
             replaceSquare(getAllyPiecesSq(), src, dst);
             setKingSq(src);
-            // TODO: src - ROOK, dst - KING
-            // TODO: srcCp - KING, dstCp - ROOK
+            // src - ROOK, dst - KING
+            // srcCp - KING, dstCp - ROOK
         }
         // reverse move & promotion
         else {
