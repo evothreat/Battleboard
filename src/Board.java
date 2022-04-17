@@ -250,7 +250,6 @@ public class Board {
         Square dstCp = move.getDst();
         Piece pieceCp = srcCp.getPiece();
 
-        // reverse turn
         turn = pieceCp.getColor();
 
         Square src = getSquareAt(srcCp.getX(), srcCp.getY());
@@ -276,11 +275,9 @@ public class Board {
             }
             src.setPiece(srcCp.getPiece());
             if (pieceCp.isKing()) {
-                // may cause problems, so pay attention...
                 setKingSq(src);
             } else {
-                getAllyPiecesSq().remove(dst);
-                getAllyPiecesSq().add(src);
+                replaceSquare(getAllyPiecesSq(), dst, src);
             }
         }
     }
