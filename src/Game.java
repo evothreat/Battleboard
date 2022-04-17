@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -60,17 +59,17 @@ public class Game {
 
     private void movePiece(Square src, Square dst) {
         Piece piece = src.getPiece();
-        Piece enemy = dst.getPiece();
-
-        if (board.makeMove(src, dst)) {
-            if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
+        switch (board.makeMove(src, dst)) {
+            case PROMOTION:
                 boardUI.deletePiece(src);
                 boardUI.setPieceAt(dst, dst.getPiece());
-            } else if (piece.hasSameColor(enemy)) {
+                break;
+            case CASTLING:
                 boardUI.swapPieces(src, dst);
-            } else {
+                break;
+            case MOVE:
                 boardUI.movePiece(src, dst);
-            }
+                break;
         }
         if (board.isCheck()) {
             System.out.println("Got CHECK from " + piece.getColor());

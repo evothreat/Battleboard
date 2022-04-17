@@ -85,7 +85,7 @@ public class Board {
     }
 
     public boolean isValidMove(Square src, Square dst) {
-        if (makeMove(src, dst)) {
+        if (makeMove(src, dst).isLegal()) {
             restoreMove();
             return true;
         }
@@ -96,7 +96,7 @@ public class Board {
         Square kingSq = getKingSq();
         List<Move> moves = new ArrayList<>();
         for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
-            if (makeMove(kingSq, t)) {
+            if (makeMove(kingSq, t).isLegal()) {
                 restoreMove();
                 moves.add(new Move(kingSq, t));
             }
@@ -179,27 +179,31 @@ public class Board {
         return false;
     }
 
-    public boolean makeMove(final Square src, final Square dst) {
+    public MoveType makeMove(final Square src, final Square dst) {
         storeMove(src, dst);
         Piece piece = src.getPiece();
         if (!piece.hasMoved()) {
             piece.setHasMoved(true);
         }
+        MoveType moveType;
         if (piece.isPawn() && dst.getX() == (piece.isWhite() ? 0 : 7)) {
             promote(src, dst);
-            // peek()
+            moveType = MoveType.PROMOTION;
         }
         else if (piece.hasSameColor(dst.getPiece())) {
             castle(src, dst);
+            moveType = MoveType.CASTLING;
         } else {
             move(src, dst);
+            moveType = MoveType.MOVE;
         }
         if (isCheck()) {
             restoreMove();
-            return false;
+            moveType = MoveType.ILLEGAL;
+            return moveType;
         }
         turn = turn.toggle();
-        return true;
+        return moveType;
     }
 
     private boolean isEnPassant(Square src, Square dst) {
