@@ -18,7 +18,7 @@ public class Pawn extends Piece {
         List<Square> targets = new ArrayList<>();
         int x = square.getX();
         int y = square.getY();
-        boolean w = getColor().bool();
+        boolean w = getColor().bool();      // or use square.getPiece().isWhite()
         // index out of range not possible, cause pawn becomes queen
         Square sq1 = board.getSquareAt(w ? x-1 : x+1, y);
         if (!sq1.isSettled()) {

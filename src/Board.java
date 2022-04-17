@@ -107,8 +107,8 @@ public class Board {
         if (source != null && source.getPiece().isKing()) {
             return getKingValidMoves();
         }
-        Square kingSq = getKingSq();
         inCheck = false;
+        Square kingSq = getKingSq();
         List<Square> enemyTargets = new ArrayList<>();
         for (Square esq : getEnemyPiecesSq()) {
             Piece enemy = esq.getPiece();
@@ -199,6 +199,32 @@ public class Board {
         }
         turn = turn.toggle();
         return true;
+    }
+
+    private boolean isEnPassant(Square src, Square dst) {
+        if (history.isEmpty()) return false;
+
+        boolean w = src.getPiece().isWhite();
+        if (src.getX() != (w ? 3 : 4)) return false;
+
+        Move move = history.peek();
+        assert move != null;
+        Square srcLast = move.getSrc();
+        Square dstLast = move.getDst();
+
+        int dist = (int) Math.hypot(srcLast.getX() - dstLast.getX(),
+                                    srcLast.getY() - dstLast.getY());
+        // 1. last piece is pawn
+        // 2. last pawn did 2 steps
+        // 3. last pawn is next to our piece                (not needed)
+        // 4. destination of our piece is behind last pawn
+        // 5. last pawn has opposite color                  (not needed)
+        // 6. our piece is on 4 or 5th row
+        if (srcLast.getPiece().isPawn() && dist == 2 &&
+            getSquareAt(w ? srcLast.getX()-1 : srcLast.getX()+1, srcLast.getY()).equals(dst)) {
+            return true;
+        }
+        return false;
     }
 
     // NOTE: we have to update board!? - No, because we operate with squares on board!
