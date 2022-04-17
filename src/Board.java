@@ -215,16 +215,15 @@ public class Board {
         int dist = (int) Math.hypot(srcLast.getX() - dstLast.getX(),
                                     srcLast.getY() - dstLast.getY());
         // 1. last piece is pawn
-        // 2. last pawn did 2 steps
-        // 3. last pawn is next to our piece                (not needed)
+        // 2. last pawn did 2 steps in one move
+        // 3. last pawn is next to our piece
         // 4. destination of our piece is behind last pawn
         // 5. last pawn has opposite color                  (not needed)
         // 6. our piece is on 4 or 5th row
-        if (srcLast.getPiece().isPawn() && dist == 2 &&
-            getSquareAt(w ? srcLast.getX()-1 : srcLast.getX()+1, srcLast.getY()).equals(dst)) {
-            return true;
-        }
-        return false;
+        return srcLast.getPiece().isPawn() && dist == 2 &&
+               (getSquareAt(dstLast.getX(), dstLast.getY() - 1).equals(src) ||
+                getSquareAt(dstLast.getX(), dstLast.getY() + 1).equals(src)) &&
+               getSquareAt(w ? srcLast.getX() - 1 : srcLast.getX() + 1, srcLast.getY()).equals(dst);
     }
 
     // NOTE: we have to update board!? - No, because we operate with squares on board!

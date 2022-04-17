@@ -35,7 +35,7 @@ public enum Direction {
         return this == NE || this == SE || this == SW || this == NW;
     }
 
-    public Direction flip() {
+    public Direction opposite() {
         switch (this) {
             case N:
                 return S;
