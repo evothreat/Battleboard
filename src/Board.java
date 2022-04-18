@@ -197,6 +197,7 @@ public class Board {
             move(src, dst);
             moveType = MoveType.MOVE;
         }
+        // NOTE: extract this code piece?
         if (isCheck()) {
             restoreMove();
             moveType = MoveType.ILLEGAL;
@@ -245,9 +246,9 @@ public class Board {
         Piece piece = src.getPiece();
         src.setPiece(dst.getPiece());
         dst.setPiece(piece);
-        ((King) piece).setDidCastling(true);
         replaceSquare(getAllyPiecesSq(), dst, src);
         setKingSq(dst);
+        // dst.getPiece().setHasMoved(true)
     }
 
     private void move(Square src, Square dst) {

@@ -12,7 +12,6 @@ public class King extends Piece {
 
     public King(King other) {
         super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
-        didCastling = other.didCastling;
     }
 
     @Override
@@ -23,7 +22,7 @@ public class King extends Piece {
         getTargets(board, board.getEnemyKingSq()).forEach(targets::remove);
 
         // should be after removeIf, cause target is settled and has same color!
-        if (!hasMoved() && !didCastling) {
+        if (!hasMoved()) {
             Square sq = Target.getNextSettledInDirection(board, square, Direction.N);
             if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
                 targets.add(sq);
