@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
 
@@ -41,12 +42,12 @@ public class Game {
         Square dstSq = board.getSquareAt(player.getColor() == Colour.BLACK ? 7-x : x, y);
         if (selectedPiece != null) {
             if (pieceTargets.contains(dstSq)) {
-                movePiece(selectedPiece, dstSq);
+                handleMove(selectedPiece, dstSq);
                 return;
             }
             clearSelection();
         }
-        if (dstSq.isSettled() && board.getTurn() == dstSq.getPiece().getColor()) { // ADD THIS: && dstSq.getPiece().getColor() == player.getColor()) {
+        if (dstSq.isSettled() && dstSq.getPiece().getColor() == player.getColor()) {
             selectPiece(dstSq);
         }
     }
@@ -57,9 +58,17 @@ public class Game {
         boardUI.selectPiece(square, pieceTargets);
     }
 
+    private void handleMove(Square src, Square dst) {
+        movePiece(src, dst);                            // player
+        clearSelection();
+
+        // TODO: check for check & mate
+
+        Move aiMove = chessAI.computeMove(board);       // ai
+        movePiece(aiMove.getSrc(), aiMove.getDst());
+    }
+
     private void movePiece(Square src, Square dst) {
-        // put this into method
-        Piece srcPiece = src.getPiece();
         Piece dstPiece = dst.getPiece();
         switch (board.makeMove(src, dst)) {
             case PROMOTION:
@@ -79,14 +88,6 @@ public class Game {
                 boardUI.movePiece(src, dst);
                 break;
         }
-        if (board.isCheck()) {
-            System.out.println("Got CHECK from " + srcPiece.getColor());
-        }
-        clearSelection();
-
-        Move aiMove = chessAI.computeMove(board);
-        System.out.println(aiMove);
-        // call method chessAI.calcMove(board) Move
     }
 
     private void clearSelection() {
