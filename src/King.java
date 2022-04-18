@@ -4,8 +4,6 @@ import java.util.Objects;
 
 public class King extends Piece {
 
-    private boolean didCastling;
-
     public King(Colour color, int weight) {
         super(PieceType.KING, color, weight, false);
     }
@@ -86,9 +84,5 @@ public class King extends Piece {
         targets.add(board.getSquareAt(x - 1, y));
         targets.removeIf(Objects::isNull);
         return targets;
-    }
-
-    public void setDidCastling(boolean didCastling) {
-        this.didCastling = didCastling;
     }
 }
