@@ -17,22 +17,9 @@ public class King extends Piece {
         // targets will also contain enemy squares
         List<Square> targets = getTargets(board, square);
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
-        if (!hasMoved()) {
-            Square sq = Target.getNextSettledInDirection(board, square, Direction.N);
-            if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
-                targets.add(board.getSquareAt(square.getX(), square.getY()+2));     // y+1 is already added
-            }
-            sq = Target.getNextSettledInDirection(board, square, Direction.S);
-            if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
-                targets.add(board.getSquareAt(square.getX(), square.getY()-2));
-            }
-            targets.add(square);
-        }
         getTargets(board, board.getEnemyKingSq()).forEach(targets::remove);
 
         boolean w = getColor().bool();
-
-        // NOTE: add getEnemyPieces by color!
         for (Square esq : board.getEnemyPiecesSq()) {
             Piece enemy = esq.getPiece();
             List<Square> enemyTargets = enemy.getValidTargets(board, esq);
@@ -49,21 +36,6 @@ public class King extends Piece {
                     Square behindSq = board.getSquareAt(square.getX()+dir.getX(), square.getY()+dir.getY());
                     if (behindSq != null) targets.remove(behindSq);
                 }
-            }
-        }
-        if (!hasMoved()) {
-            if (!targets.remove(square)) {
-                targets.remove(board.getSquareAt(square.getX(), square.getY()+2));
-                targets.remove(board.getSquareAt(square.getX(), square.getY()-2));
-                return targets;
-            }
-            if (targets.remove(board.getSquareAt(square.getX(), square.getY()+2)) &&
-                targets.contains(board.getSquareAt(square.getX(), square.getY()+1))) {
-                targets.add(board.getSquareAt(square.getX(), 7));
-            }
-            if (targets.remove(board.getSquareAt(square.getX(), square.getY()-2)) &&
-                targets.contains(board.getSquareAt(square.getX(), square.getY()-1))) {
-                targets.add(board.getSquareAt(square.getX(), 0));
             }
         }
         return targets;

@@ -96,6 +96,12 @@ public class Board {
                 moves.add(new Move(kingSq, t));
             }
         }
+        if (canCastleLeft()) {
+            moves.add(new Move(kingSq, getSquareAt(kingSq.getX(), 7)));
+        }
+        if (canCastleRight()) {
+            moves.add(new Move(kingSq, getSquareAt(kingSq.getX(), 0)));
+        }
         return moves;
     }
 
@@ -121,12 +127,12 @@ public class Board {
         // NOTE: for optimization purpose, we filter steps that will anyway cause check...
         List<Move> moves;
         List<Square> allyPiecesSq;
-        if (source == null) {
-            moves = getKingValidMoves();
-            allyPiecesSq = getAllyPiecesSq();
-        } else {
+        if (source != null) {
             moves = new ArrayList<>();
             allyPiecesSq = List.of(source);
+        } else {
+            moves = getKingValidMoves();
+            allyPiecesSq = getAllyPiecesSq();
         }
         for (Square asq : allyPiecesSq) {
             for (Square t : asq.getPiece().getValidTargets(this, asq)) {
@@ -314,6 +320,25 @@ public class Board {
                 replaceSquare(getAllyPiecesSq(), dst, src);
             }
         }
+    }
+
+    public boolean canCastleLeft() {
+        return canCastle(Direction.N);
+    }
+
+    public boolean canCastleRight() {
+        return canCastle(Direction.S);
+    }
+
+    private boolean canCastle(Direction dir) {
+        if (getAllyKingSq().getPiece().hasMoved()) return false;
+        Square kingSq = getAllyKingSq();
+        Square sq = Target.getNextSettledInDirection(this, kingSq, dir);
+        if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
+            return isValidMove(kingSq, getSquareAt(kingSq.getX(), kingSq.getY() + dir.getY())) &&
+                   isValidMove(kingSq, getSquareAt(kingSq.getX(), kingSq.getY() + dir.getY() * 2));
+        }
+        return false;
     }
 
     public void setState(final Integer[][] newState) {
