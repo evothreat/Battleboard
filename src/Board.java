@@ -341,6 +341,18 @@ public class Board {
         return false;
     }
 
+    public int evaluate() {
+        int score = whiteKingSq != null ? whiteKingSq.getPiece().getWeight() : 0;
+        for (Square sq : whitePiecesSq) {
+            score += sq.getPiece().getWeight();
+        }
+        score += blackKingSq != null ? blackKingSq.getPiece().getWeight() : 0;
+        for (Square sq : blackPiecesSq) {
+            score += sq.getPiece().getWeight();
+        }
+        return score;
+    }
+
     public void setState(final Integer[][] newState) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
