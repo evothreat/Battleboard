@@ -1,11 +1,7 @@
 public enum MoveType {
-    ILLEGAL,
+    //ILLEGAL,
     MOVE,
     CASTLING,
     PROMOTION,
-    EN_PASSANT;
-
-    public boolean isLegal() {
-        return this != ILLEGAL;
-    }
+    EN_PASSANT
 }

@@ -44,10 +44,6 @@ public class Board {
         return turn;
     }
 
-    public Square getKingSq() {
-        return turn == Colour.BLACK ? blackKingSq : whiteKingSq;
-    }
-
     private void setKingSq(Square square) {
         if (turn == Colour.BLACK) {
             blackKingSq = square;
@@ -85,15 +81,15 @@ public class Board {
     }
 
     public boolean isValidMove(Square src, Square dst) {
-        if (makeMove(src, dst).isLegal()) {
-            restoreMove();
-            return true;
-        }
-        return false;
+        makeMove(src, dst);
+        turn = turn.toggle();
+        boolean res = !isCheck();
+        restoreMove();
+        return res;
     }
 
     public List<Move> getKingValidMoves() {
-        Square kingSq = getKingSq();
+        Square kingSq = getAllyKingSq();
         List<Move> moves = new ArrayList<>();
         for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
             if (isValidMove(kingSq, t)) {
@@ -108,7 +104,7 @@ public class Board {
             return getKingValidMoves();
         }
         inCheck = false;
-        Square kingSq = getKingSq();
+        Square kingSq = getAllyKingSq();
         List<Square> enemyTargets = new ArrayList<>();
         for (Square esq : getEnemyPiecesSq()) {
             Piece enemy = esq.getPiece();
@@ -169,7 +165,7 @@ public class Board {
     }
 
     public boolean isCheck() {
-        Square kingSq = getKingSq();
+        Square kingSq = getAllyKingSq();
         for (Square esq : getEnemyPiecesSq()) {
             if (esq.getPiece().getValidTargets(this, esq).contains(kingSq)) {
                 return true;
@@ -195,12 +191,6 @@ public class Board {
         } else {
             move(src, dst);
             moveType = MoveType.MOVE;
-        }
-        // NOTE: extract this code piece?
-        if (isCheck()) {
-            restoreMove();
-            moveType = MoveType.ILLEGAL;
-            return moveType;
         }
         turn = turn.toggle();
         return moveType;
