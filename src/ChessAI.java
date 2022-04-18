@@ -2,7 +2,7 @@ import java.util.List;
 
 public class ChessAI {
 
-    static int DEPTH = 4;
+    static int DEPTH = 3;
 
     Colour color;
 
@@ -19,7 +19,7 @@ public class ChessAI {
         for (Move m : board.getValidMoves(null)) {
 
             board.makeMove(m.getSrc(), m.getDst());
-            int score = Minimax.max(board, DEPTH-1);
+            int score = Minimax.min(board, DEPTH-1);
             board.restoreMove();
 
             if (lowestScore > score) {

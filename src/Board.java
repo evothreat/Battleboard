@@ -5,13 +5,13 @@ import java.util.List;
 public class Board {
     static final Integer[][] DEFAULT_BOARD_STATE = {
             {-4, -2, -3, -5, -6, -3, -2, -4},
-            {-1, -1, 0, 0, 0, 0, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 0, 0, 0, 0, 1, 1},
-            {4, 0, 0, 0, 6, 0, 0, 4}
+            {1, 1, 1, 1, 1, 1, 1, 1},
+            {4, 2, 3, 5, 6, 3, 2, 4}
     };
 
     private final Square[][] state;
@@ -96,10 +96,10 @@ public class Board {
                 moves.add(new Move(kingSq, t));
             }
         }
-        if (canCastleLeft()) {
+        if (canCastleRight()) {
             moves.add(new Move(kingSq, getSquareAt(kingSq.getX(), 7)));
         }
-        if (canCastleRight()) {
+        if (canCastleLeft()) {
             moves.add(new Move(kingSq, getSquareAt(kingSq.getX(), 0)));
         }
         return moves;
@@ -251,11 +251,6 @@ public class Board {
         replaceSquare(getAllyPiecesSq(), dst, newRookSq);
         setKingSq(newKingSq);
     }
-    /*
-    1. retrieve from new squares or use copies
-    2. clear from new squares
-    3. set to old squares
-     */
 
     private void move(Square src, Square dst) {
         if (src.getPiece().isKing()) {
@@ -313,20 +308,20 @@ public class Board {
             } else {
                 dst.setPiece(null);
             }
-            src.setPiece(srcCp.getPiece());
+            src.setPiece(pieceCp);
             if (pieceCp.isKing()) {
                 setKingSq(src);
             } else {
-                replaceSquare(getAllyPiecesSq(), dst, src);
+                replaceSquare(getAllyPiecesSq(), dstCp, src);
             }
         }
     }
 
-    public boolean canCastleLeft() {
+    public boolean canCastleRight() {
         return canCastle(Direction.N);
     }
 
-    public boolean canCastleRight() {
+    public boolean canCastleLeft() {
         return canCastle(Direction.S);
     }
 
@@ -334,6 +329,7 @@ public class Board {
         if (getAllyKingSq().getPiece().hasMoved()) return false;
         Square kingSq = getAllyKingSq();
         Square sq = Target.getNextSettledInDirection(this, kingSq, dir);
+        // no need to check if same color, cause enemy's rook hasMoved condition would fail
         if (sq != null && sq.getPiece().isRook() && !sq.getPiece().hasMoved()) {
             return isValidMove(kingSq, getSquareAt(kingSq.getX(), kingSq.getY() + dir.getY())) &&
                    isValidMove(kingSq, getSquareAt(kingSq.getX(), kingSq.getY() + dir.getY() * 2));

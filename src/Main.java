@@ -17,7 +17,7 @@ public class Main {
         Player player = new Player(Colour.WHITE);
         ChessAI chessAI = new ChessAI(Colour.BLACK);
 
-        Board board = new Board(testBoard, player.getColor());
+        Board board = new Board(null, player.getColor());
         BoardUI boardUI = new BoardUI();
 
         Game game = new Game(board, boardUI, player, chessAI);

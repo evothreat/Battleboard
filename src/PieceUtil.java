@@ -1,11 +1,11 @@
 public class PieceUtil {
 
-    static int KING_WEIGHT = 900;
-    static int QUEEN_WEIGHT = 90;
-    static int ROOK_WEIGHT = 50;
-    static int BISHOP_WEIGHT = 30;
-    static int KNIGHT_WEIGHT = 30;
-    static int PAWN_WEIGHT = 10;
+    static int KING_WEIGHT = 20000;
+    static int QUEEN_WEIGHT = 900;
+    static int ROOK_WEIGHT = 500;
+    static int BISHOP_WEIGHT = 330;
+    static int KNIGHT_WEIGHT = 320;
+    static int PAWN_WEIGHT = 100;
 
     static Piece intToPiece(int n) {
         Colour color = n > 0 ? Colour.WHITE : Colour.BLACK;

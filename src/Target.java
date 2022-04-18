@@ -49,11 +49,9 @@ public class Target {
         int currX = square.getX() + dir.getX();
         int currY = square.getY() + dir.getY();
 
-        Colour color = square.getPiece().getColor();
-
         while (currX >= 0 && currX < 8 && currY >= 0 && currY < 8) {
             Square sq = board.getSquareAt(currX, currY);
-            if (sq.isSettled() && sq.getPiece().getColor() == color) {
+            if (sq.isSettled()) {
                 return sq;
             }
             currX += dir.getX();
