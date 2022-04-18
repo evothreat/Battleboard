@@ -3,24 +3,24 @@ import javax.swing.*;
 public class Main {
 
     static Integer[][] testBoard = {
-            {0, -5, -4, -3, -2, -3, -4, -5},
-            {0, 0, -1, -1, 0, -1, -1, 0},
+            {0, -3, -4, 0, 0, 0, -6, 0},
+            {0, 0, 3, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, -6, 0, 0, 0},
-            {0, 0, 0, 0, 1, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 3, 0, 0, 1, 1, 0},
-            {2, 3, 4, 5, 6, 2, 3, 4}
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 1, 1, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 6, 0, 0, 0}
     };
 
     public static void main(String[] args){
         Player player = new Player(Colour.WHITE);
+        ChessAI chessAI = new ChessAI(Colour.BLACK);
 
-        Board board = new Board(null, player.getColor());
-
+        Board board = new Board(testBoard, player.getColor());
         BoardUI boardUI = new BoardUI();
 
-        Game game = new Game(board, boardUI, player, null);
+        Game game = new Game(board, boardUI, player, chessAI);
         game.start();
 
         JFrame window = new JFrame("Chess");

@@ -58,6 +58,7 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
+        // put this into method
         Piece srcPiece = src.getPiece();
         Piece dstPiece = dst.getPiece();
         switch (board.makeMove(src, dst)) {
@@ -82,6 +83,10 @@ public class Game {
             System.out.println("Got CHECK from " + srcPiece.getColor());
         }
         clearSelection();
+
+        Move aiMove = chessAI.computeMove(board);
+        System.out.println(aiMove);
+        // call method chessAI.calcMove(board) Move
     }
 
     private void clearSelection() {

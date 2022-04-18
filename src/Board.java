@@ -342,11 +342,11 @@ public class Board {
     }
 
     public int evaluate() {
-        int score = whiteKingSq != null ? whiteKingSq.getPiece().getWeight() : 0;
+        int score = whiteKingSq.getPiece().getWeight();
         for (Square sq : whitePiecesSq) {
             score += sq.getPiece().getWeight();
         }
-        score += blackKingSq != null ? blackKingSq.getPiece().getWeight() : 0;
+        score += blackKingSq.getPiece().getWeight();
         for (Square sq : blackPiecesSq) {
             score += sq.getPiece().getWeight();
         }
