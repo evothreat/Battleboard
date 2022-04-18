@@ -232,12 +232,12 @@ public class Board {
     }
 
     private void castle(Square src, Square dst) {
+        dst.getPiece().setHasMoved(true);
         Piece piece = src.getPiece();
         src.setPiece(dst.getPiece());
         dst.setPiece(piece);
         replaceSquare(getAllyPiecesSq(), dst, src);
         setKingSq(dst);
-        // dst.getPiece().setHasMoved(true)
     }
 
     private void move(Square src, Square dst) {
