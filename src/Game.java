@@ -58,21 +58,28 @@ public class Game {
     }
 
     private void movePiece(Square src, Square dst) {
-        Piece piece = src.getPiece();
+        Piece srcPiece = src.getPiece();
+        Piece dstPiece = dst.getPiece();
         switch (board.makeMove(src, dst)) {
             case PROMOTION:
                 boardUI.deletePiece(src);
-                boardUI.setPieceAt(dst, dst.getPiece());
+                boardUI.setPieceAt(dst, dstPiece);
                 break;
             case CASTLING:
-                boardUI.swapPieces(src, dst);
+                boolean isLeft = dst.getY() == 0;
+                Square kingSq = board.getSquareAt(src.getX(), isLeft ? src.getY()-2 : src.getY()+2);
+                Square rookSq = board.getSquareAt(src.getX(), isLeft ? src.getY()-1 : src.getY()+1);
+                boardUI.deletePiece(src);
+                boardUI.deletePiece(dst);
+                boardUI.setPieceAt(kingSq, kingSq.getPiece());
+                boardUI.setPieceAt(rookSq, rookSq.getPiece());
                 break;
             case MOVE:
                 boardUI.movePiece(src, dst);
                 break;
         }
         if (board.isCheck()) {
-            System.out.println("Got CHECK from " + piece.getColor());
+            System.out.println("Got CHECK from " + srcPiece.getColor());
         }
         clearSelection();
     }

@@ -232,13 +232,24 @@ public class Board {
     }
 
     private void castle(Square src, Square dst) {
-        dst.getPiece().setHasMoved(true);
-        Piece piece = src.getPiece();
-        src.setPiece(dst.getPiece());
-        dst.setPiece(piece);
-        replaceSquare(getAllyPiecesSq(), dst, src);
-        setKingSq(dst);
+        Piece king = src.getPiece();
+        Piece rook = dst.getPiece();
+        rook.setHasMoved(true);
+        boolean isLeft = dst.getY() == 0;
+        Square newKingSq = getSquareAt(src.getX(), isLeft ? src.getY()-2 : src.getY()+2);
+        Square newRookSq = getSquareAt(src.getX(), isLeft ? src.getY()-1 : src.getY()+1);
+        newKingSq.setPiece(king);
+        newRookSq.setPiece(rook);
+        src.setPiece(null);
+        dst.setPiece(null);
+        replaceSquare(getAllyPiecesSq(), dst, newRookSq);
+        setKingSq(newKingSq);
     }
+    /*
+    1. retrieve from new squares or use copies
+    2. clear from new squares
+    3. set to old squares
+     */
 
     private void move(Square src, Square dst) {
         if (src.getPiece().isKing()) {
@@ -276,12 +287,16 @@ public class Board {
 
         // reverse castling (use copies, cause of rest attributes like hasMoved!)
         if (pieceCp.hasSameColor(dstCp.getPiece())) {
-            src.setPiece(srcCp.getPiece());
+            boolean isLeft = dst.getY() == 0;
+            Square kingSq = getSquareAt(src.getX(), isLeft ? src.getY()-2 : src.getY()+2);
+            Square rookSq = getSquareAt(src.getX(), isLeft ? src.getY()-1 : src.getY()+1);
+            // we use piece copies...
+            src.setPiece(pieceCp);
             dst.setPiece(dstCp.getPiece());
-            replaceSquare(getAllyPiecesSq(), src, dst);
+            kingSq.setPiece(null);
+            rookSq.setPiece(null);
+            replaceSquare(getAllyPiecesSq(), rookSq, dst);
             setKingSq(src);
-            // src - ROOK, dst - KING
-            // srcCp - KING, dstCp - ROOK
         }
         // reverse move & promotion
         else {

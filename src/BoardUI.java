@@ -104,8 +104,11 @@ public class BoardUI {
     }
 
     public void setPieceAt(Square square, Piece piece) {
-        JLabel sq = boardSquares[square.getX()][square.getY()];
-        sq.setIcon(getPieceIcon(piece));
+        setPieceAt(square.getX(), square.getY(), piece);
+    }
+
+    public void setPieceAt(int x, int y, Piece piece) {
+        boardSquares[x][y].setIcon(getPieceIcon(piece));
     }
 
     // store later in static variable...
