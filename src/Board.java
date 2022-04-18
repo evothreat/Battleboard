@@ -96,8 +96,7 @@ public class Board {
         Square kingSq = getKingSq();
         List<Move> moves = new ArrayList<>();
         for (Square t : kingSq.getPiece().getValidTargets(this, kingSq)) {
-            if (makeMove(kingSq, t).isLegal()) {
-                restoreMove();
+            if (isValidMove(kingSq, t)) {
                 moves.add(new Move(kingSq, t));
             }
         }
