@@ -2,12 +2,12 @@ import java.util.List;
 
 public class Queen extends Piece {
 
-    public Queen(Colour color, int weight) {
-        super(PieceType.QUEEN, color, weight, false);
+    public Queen(Colour color) {
+        super(PieceType.QUEEN, color, false);
     }
 
     public Queen(Queen other) {
-        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.hasMoved());
     }
 
     @Override

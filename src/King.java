@@ -4,12 +4,12 @@ import java.util.Objects;
 
 public class King extends Piece {
 
-    public King(Colour color, int weight) {
-        super(PieceType.KING, color, weight, false);
+    public King(Colour color) {
+        super(PieceType.KING, color, false);
     }
 
     public King(King other) {
-        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.hasMoved());
     }
 
     @Override

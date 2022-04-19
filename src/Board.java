@@ -234,7 +234,7 @@ public class Board {
             getEnemyPiecesSq().remove(dst);
         }
         src.setPiece(null);
-        dst.setPiece(new Queen(turn, turn.sign() * PieceUtil.QUEEN_WEIGHT));
+        dst.setPiece(new Queen(turn));
     }
 
     private void castle(Square src, Square dst) {
@@ -338,13 +338,13 @@ public class Board {
     }
 
     public int evaluate() {
-        int score = whiteKingSq.getPiece().getWeight();
+        int score = PieceUtil.getWeight(whiteKingSq.getPiece());
         for (Square sq : whitePiecesSq) {
-            score += sq.getPiece().getWeight();
+            score += PieceUtil.getWeight(sq.getPiece());
         }
-        score += blackKingSq.getPiece().getWeight();
+        score -= PieceUtil.getWeight(blackKingSq.getPiece());
         for (Square sq : blackPiecesSq) {
-            score += sq.getPiece().getWeight();
+            score -= PieceUtil.getWeight(sq.getPiece());
         }
         return score;
     }

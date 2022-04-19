@@ -4,14 +4,12 @@ abstract public class Piece {
 
     private final PieceType pieceType;
     private final Colour color;
-    private final int weight;
     private boolean hasMoved;
 
-    public Piece(PieceType pieceType, Colour color, int weight, boolean hasMoved) {
+    public Piece(PieceType pieceType, Colour color, boolean hasMoved) {
         this.color = color;
         this.pieceType = pieceType;
         this.hasMoved = hasMoved;
-        this.weight = weight;
     }
 
     public PieceType getPieceType() {
@@ -20,10 +18,6 @@ abstract public class Piece {
 
     public Colour getColor() {
         return color;
-    }
-
-    public int getWeight() {
-        return weight;
     }
 
     public boolean hasMoved() {

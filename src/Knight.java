@@ -3,12 +3,12 @@ import java.util.List;
 
 public class Knight extends Piece {
 
-    public Knight(Colour color, int weight) {
-        super(PieceType.KNIGHT, color, weight, false);
+    public Knight(Colour color) {
+        super(PieceType.KNIGHT, color, false);
     }
 
     public Knight(Knight other) {
-        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.hasMoved());
     }
 
     @Override

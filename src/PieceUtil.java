@@ -1,29 +1,39 @@
 public class PieceUtil {
 
-    static int KING_WEIGHT = 20000;
-    static int QUEEN_WEIGHT = 900;
-    static int ROOK_WEIGHT = 500;
-    static int BISHOP_WEIGHT = 330;
-    static int KNIGHT_WEIGHT = 320;
-    static int PAWN_WEIGHT = 100;
-
     static Piece intToPiece(int n) {
         Colour color = n > 0 ? Colour.WHITE : Colour.BLACK;
-        int sign = color.sign();
-        switch (n * sign) {
+        switch (n * color.sign()) {
             case 6:
-                return new King(color, sign * KING_WEIGHT);
+                return new King(color);
             case 5:
-                return new Queen(color, sign * QUEEN_WEIGHT);
+                return new Queen(color);
             case 4:
-                return new Rook(color, sign * ROOK_WEIGHT);
+                return new Rook(color);
             case 3:
-                return new Bishop(color, sign * BISHOP_WEIGHT);
+                return new Bishop(color);
             case 2:
-                return new Knight(color, sign * KNIGHT_WEIGHT);
+                return new Knight(color);
             case 1:
-                return new Pawn(color, sign * PAWN_WEIGHT);
+                return new Pawn(color);
         }
         return null;
+    }
+
+    static int getWeight(Piece piece) {
+        switch (piece.getPieceType()) {
+            case PAWN:
+                return 100;
+            case KNIGHT:
+                return 320;
+            case BISHOP:
+                return 330;
+            case ROOK:
+                return 500;
+            case QUEEN:
+                return 900;
+            case KING:
+                return 20000;
+        }
+        return 0;
     }
 }

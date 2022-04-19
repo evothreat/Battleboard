@@ -2,12 +2,12 @@ import java.util.List;
 
 public class Rook extends Piece {
 
-    public Rook(Colour color, int weight) {
-        super(PieceType.ROOK, color, weight, false);
+    public Rook(Colour color) {
+        super(PieceType.ROOK, color, false);
     }
 
     public Rook(Rook other) {
-        super(other.getPieceType(), other.getColor(), other.getWeight(), other.hasMoved());
+        super(other.getPieceType(), other.getColor(), other.hasMoved());
     }
 
     @Override
