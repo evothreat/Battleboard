@@ -348,7 +348,7 @@ public class Board {
     public void setState(final Integer[][] newState) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                Square sq = new Square(PieceUtil.intToPiece(newState[x][y]), x, y);
+                Square sq = new Square(PieceConverter.intToPiece(newState[x][y]), x, y);
                 state[x][y] = sq;
 
                 Piece pc = sq.getPiece();

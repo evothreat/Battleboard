@@ -1,4 +1,4 @@
-public class PieceUtil {
+public class PieceConverter {
 
     static Piece intToPiece(int n) {
         Colour color = n > 0 ? Colour.WHITE : Colour.BLACK;
@@ -17,5 +17,24 @@ public class PieceUtil {
                 return new Pawn(color);
         }
         return null;
+    }
+
+    static int pieceToInt(Piece piece) {
+        int sign = piece.getColor().sign();
+        switch (piece.getPieceType()) {
+            case KING:
+                return sign * 6;
+            case QUEEN:
+                return sign * 5;
+            case ROOK:
+                return sign * 4;
+            case BISHOP:
+                return sign * 3;
+            case KNIGHT:
+                return sign * 2;
+            case PAWN:
+                return sign;
+        }
+        return 0;
     }
 }
