@@ -14,12 +14,12 @@ public class ChessAI {
         if (board.getTurn() != color) {
             return null;
         }
-        int lowestScore = Integer.MAX_VALUE;
+        double lowestScore = Integer.MAX_VALUE;
         Move bestMove = null;
         for (Move m : board.getValidMoves(null)) {
 
             board.makeMove(m.getSrc(), m.getDst());
-            int score = Minimax.min(board, DEPTH-1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            double score = Minimax.min(board, DEPTH-1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
             board.restoreMove();
 
             if (lowestScore > score) {

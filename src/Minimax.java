@@ -3,11 +3,11 @@ import java.util.List;
 // maybe check whether validMoves list is empty
 public class Minimax {
 
-    static int min(Board board, int depth, int alpha, int beta) {
+    static double min(Board board, int depth, double alpha, double beta) {
         if (depth == 0) {
             return Evaluator.evaluate(board);
         }
-        int min = Integer.MAX_VALUE;
+        double min = Double.POSITIVE_INFINITY;
         for (Move m : board.getValidMoves(null)) {
             board.makeMove(m.getSrc(), m.getDst());
 
@@ -24,11 +24,11 @@ public class Minimax {
         return min;
     }
 
-    static int max(Board board, int depth, int alpha, int beta) {
+    static double max(Board board, int depth, double alpha, double beta) {
         if (depth == 0) {
             return Evaluator.evaluate(board);
         }
-        int max = Integer.MIN_VALUE;
+        double max = Double.NEGATIVE_INFINITY;
         for (Move m : board.getValidMoves(null)) {
             board.makeMove(m.getSrc(), m.getDst());
 

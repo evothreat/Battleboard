@@ -1,8 +1,6 @@
-import java.util.Arrays;
-
 public class Evaluator {
 
-    static double[][] whitePawn = new double[][] {
+    static double[][] whitePawnPST = new double[][] {
             {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
             {5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
             {1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
@@ -13,9 +11,9 @@ public class Evaluator {
             {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
     };
 
-    static double[][] blackPawn = Utils.reverseArray(whitePawn);
+    static double[][] blackPawnPST = Utils.reverseArray(whitePawnPST);
 
-    static double[][] whiteKnight = new double[][] {
+    static double[][] whiteKnightPST = new double[][] {
             {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
             {-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
             {-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
@@ -26,9 +24,9 @@ public class Evaluator {
             {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
     };
 
-    static double[][] blackKnight = Utils.reverseArray(whiteKnight);
+    static double[][] blackKnightPST = Utils.reverseArray(whiteKnightPST);
 
-    static double[][] whiteBishop = new double[][] {
+    static double[][] whiteBishopPST = new double[][] {
             { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0},
             { -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
             { -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0},
@@ -39,9 +37,9 @@ public class Evaluator {
             { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0}
     };
 
-    static double[][] blackBishop = Utils.reverseArray(whiteBishop);
+    static double[][] blackBishopPST = Utils.reverseArray(whiteBishopPST);
 
-    static double[][] whiteRook = new double[][] {
+    static double[][] whiteRookPST = new double[][] {
             {  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
             {  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5},
             { -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
@@ -52,9 +50,9 @@ public class Evaluator {
             {  0.0,  0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0}
     };
 
-    static double[][] blackRook = Utils.reverseArray(whiteRook);
+    static double[][] blackRookPST = Utils.reverseArray(whiteRookPST);
 
-    static double[][] whiteQueen = new double[][] {
+    static double[][] whiteQueenPST = new double[][] {
             { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
             { -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
             { -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
@@ -65,9 +63,9 @@ public class Evaluator {
             { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0}
     };
 
-    static double[][] blackQueen = Utils.reverseArray(whiteQueen);
+    static double[][] blackQueenPST = Utils.reverseArray(whiteQueenPST);
 
-    static double[][] whiteKing = new double[][] {
+    static double[][] whiteKingPST = new double[][] {
             { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
             { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
             { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
@@ -78,35 +76,46 @@ public class Evaluator {
             {  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0}
     };
 
-    static double[][] blackKing = Utils.reverseArray(whiteKing);
+    static double[][] blackKingPST = Utils.reverseArray(whiteKingPST);
 
-    static int evaluate(Board board) {
-        int score = weightOf(board.getWhiteKingSq().getPiece());
+    static double evaluate(Board board) {
+        double score = getPieceValue(board.getWhiteKingSq());
         for (Square sq : board.getWhitePiecesSq()) {
-            score += weightOf(sq.getPiece());
+            score += getPieceValue(sq);
         }
-        score -= weightOf(board.getBlackKingSq().getPiece());
+        score += getPieceValue(board.getBlackKingSq());
         for (Square sq : board.getBlackPiecesSq()) {
-            score -= weightOf(sq.getPiece());
+            score += getPieceValue(sq);
         }
         return score;
     }
 
-    static int weightOf(Piece piece) {
-        switch (piece.getPieceType()) {
+    static double getPieceValue(Square square) {
+        boolean w = square.getPiece().getColor().bool();
+        int x = square.getX();
+        int y = square.getY();
+
+        double value = 0;
+        switch (square.getPiece().getPieceType()) {
             case PAWN:
-                return 100;
+                value = 100 + (w ? whitePawnPST[x][y] : blackPawnPST[x][y]);
+                break;
             case KNIGHT:
-                return 320;
+                value = 320 + (w ? whiteKnightPST[x][y] : blackKnightPST[x][y]);
+                break;
             case BISHOP:
-                return 330;
+                value = 330 + (w ? whiteBishopPST[x][y] : blackBishopPST[x][y]);
+                break;
             case ROOK:
-                return 500;
+                value = 500 + (w ? whiteRookPST[x][y] : blackRookPST[x][y]);
+                break;
             case QUEEN:
-                return 900;
+                value = 900 + (w ? whiteQueenPST[x][y] : blackQueenPST[x][y]);
+                break;
             case KING:
-                return 20000;
+                value = 20000 + (w ? whiteKingPST[x][y] : blackKingPST[x][y]);
+                break;
         }
-        return 0;
+        return w ? value : -value;
     }
 }

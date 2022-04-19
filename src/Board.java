@@ -52,14 +52,6 @@ public class Board {
         }
     }
 
-    private void setKingSq(Colour color, Square square) {
-        if (color == Colour.BLACK) {
-            blackKingSq = square;
-        } else {
-            whiteKingSq = square;
-        }
-    }
-
     public Square getBlackKingSq() {
         return blackKingSq;
     }
@@ -362,7 +354,11 @@ public class Board {
                 Piece pc = sq.getPiece();
                 if (pc == null) continue;
                 if (pc.isKing()) {
-                    setKingSq(pc.getColor(), sq);
+                    if (pc.isBlack()) {
+                        blackKingSq = sq;
+                    } else {
+                        whiteKingSq = sq;
+                    }
                     continue;
                 }
                 if (pc.isBlack()) {
