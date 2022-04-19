@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Evaluator {
 
     static double[][] whitePawn = new double[][] {
@@ -11,7 +13,7 @@ public class Evaluator {
             {0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
     };
 
-    //static double[][] blackPawn =
+    static double[][] blackPawn = Utils.reverseArray(whitePawn);
 
     static double[][] whiteKnight = new double[][] {
             {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
@@ -24,7 +26,7 @@ public class Evaluator {
             {-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
     };
 
-    //static double[][] blackKnight =
+    static double[][] blackKnight = Utils.reverseArray(whiteKnight);
 
     static double[][] whiteBishop = new double[][] {
             { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0},
@@ -37,7 +39,7 @@ public class Evaluator {
             { -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0}
     };
 
-    //static double[][] blackBishop =
+    static double[][] blackBishop = Utils.reverseArray(whiteBishop);
 
     static double[][] whiteRook = new double[][] {
             {  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
@@ -50,7 +52,7 @@ public class Evaluator {
             {  0.0,  0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0}
     };
 
-    //static double[][] blackRook =
+    static double[][] blackRook = Utils.reverseArray(whiteRook);
 
     static double[][] whiteQueen = new double[][] {
             { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
@@ -63,7 +65,7 @@ public class Evaluator {
             { -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0}
     };
 
-    //static double[][] blackQueen =
+    static double[][] blackQueen = Utils.reverseArray(whiteQueen);
 
     static double[][] whiteKing = new double[][] {
             { -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
@@ -76,7 +78,7 @@ public class Evaluator {
             {  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0}
     };
 
-    //static double[][] blackKing =
+    static double[][] blackKing = Utils.reverseArray(whiteKing);
 
     static int evaluate(Board board) {
         int score = weightOf(board.getWhiteKingSq().getPiece());
