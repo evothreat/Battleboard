@@ -19,7 +19,7 @@ public class ChessAI {
         for (Move m : board.getValidMoves(null)) {
 
             board.makeMove(m.getSrc(), m.getDst());
-            int score = Minimax.min(board, DEPTH-1);
+            int score = Minimax.min(board, DEPTH-1, Integer.MIN_VALUE, Integer.MAX_VALUE);
             board.restoreMove();
 
             if (lowestScore > score) {
