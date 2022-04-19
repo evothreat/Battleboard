@@ -60,6 +60,14 @@ public class Board {
         }
     }
 
+    public Square getKingSq(Colour color) {
+        return color == Colour.BLACK ? blackKingSq : whiteKingSq;
+    }
+
+    public List<Square> getPiecesSq(Colour color) {
+        return color == Colour.BLACK ? blackPiecesSq : whitePiecesSq;
+    }
+
     public List<Square> getAllyPiecesSq() {
         return turn == Colour.BLACK ? blackPiecesSq : whitePiecesSq;
     }
@@ -335,18 +343,6 @@ public class Board {
                    isValidMove(kingSq, getSquareAt(kingSq.getX(), kingSq.getY() + dir.getY() * 2));
         }
         return false;
-    }
-
-    public int evaluate() {
-        int score = PieceUtil.getWeight(whiteKingSq.getPiece());
-        for (Square sq : whitePiecesSq) {
-            score += PieceUtil.getWeight(sq.getPiece());
-        }
-        score -= PieceUtil.getWeight(blackKingSq.getPiece());
-        for (Square sq : blackPiecesSq) {
-            score -= PieceUtil.getWeight(sq.getPiece());
-        }
-        return score;
     }
 
     public void setState(final Integer[][] newState) {

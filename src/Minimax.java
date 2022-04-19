@@ -5,7 +5,7 @@ public class Minimax {
 
     static int min(Board board, int depth, int alpha, int beta) {
         if (depth == 0) {
-            return board.evaluate();
+            return Evaluator.evaluate(board);
         }
         int min = Integer.MAX_VALUE;
         for (Move m : board.getValidMoves(null)) {
@@ -26,7 +26,7 @@ public class Minimax {
 
     static int max(Board board, int depth, int alpha, int beta) {
         if (depth == 0) {
-            return board.evaluate();
+            return Evaluator.evaluate(board);
         }
         int max = Integer.MIN_VALUE;
         for (Move m : board.getValidMoves(null)) {

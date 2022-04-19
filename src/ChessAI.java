@@ -2,7 +2,7 @@ import java.util.List;
 
 public class ChessAI {
 
-    static int DEPTH = 3;
+    static int DEPTH = 4;
 
     Colour color;
 
