@@ -60,12 +60,20 @@ public class Board {
         }
     }
 
-    public Square getKingSq(Colour color) {
-        return color == Colour.BLACK ? blackKingSq : whiteKingSq;
+    public Square getBlackKingSq() {
+        return blackKingSq;
     }
 
-    public List<Square> getPiecesSq(Colour color) {
-        return color == Colour.BLACK ? blackPiecesSq : whitePiecesSq;
+    public Square getWhiteKingSq() {
+        return whiteKingSq;
+    }
+
+    public List<Square> getBlackPiecesSq() {
+        return blackPiecesSq;
+    }
+
+    public List<Square> getWhitePiecesSq() {
+        return whitePiecesSq;
     }
 
     public List<Square> getAllyPiecesSq() {
