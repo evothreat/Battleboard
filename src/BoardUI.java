@@ -163,4 +163,13 @@ public class BoardUI {
             }
         }
     }
+
+    public void paintSquareInRed(Square square) {
+        boardSquares[square.getX()][square.getY()].setBackground(Color.RED);
+    }
+
+    public void resetSquareColor(Square square) {
+        JLabel sq = boardSquares[square.getX()][square.getY()];
+        sq.setBackground(sq.getName().equals("w") ? whiteSqColor : blackSqColor);
+    }
 }

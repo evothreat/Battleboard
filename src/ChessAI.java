@@ -29,4 +29,8 @@ public class ChessAI {
         }
         return bestMove;
     }
+
+    public Colour getColor() {
+        return color;
+    }
 }
