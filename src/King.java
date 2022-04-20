@@ -13,9 +13,9 @@ public class King extends Piece {
     }
 
     @Override
-    List<Square> getValidTargets(Board board, Square square) {
+    List<Square> getValidTargets(Board board, Square kingSq) {
         // targets will also contain enemy squares
-        List<Square> targets = getTargets(board, square);
+        List<Square> targets = getTargets(board, kingSq);
         targets.removeIf(sq -> sq.isSettled() && hasSameColor(sq.getPiece()));
         getTargets(board, board.getEnemyKingSq()).forEach(targets::remove);
 
@@ -27,15 +27,23 @@ public class King extends Piece {
                 enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst).isDirect());
                 enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()-1));
                 enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()+1));
-                enemyTargets.forEach(targets::remove);      // check for null?
+                enemyTargets.forEach(t -> {
+                    if (t != null) {
+                        targets.remove(t);
+                    }
+                });
                 continue;
             }
             for (Square t : enemyTargets) {
-                if (targets.remove(t)) {
-                    Direction dir = Direction.from2Squares(esq, square);
-                    Square behindSq = board.getSquareAt(square.getX()+dir.getX(), square.getY()+dir.getY());
-                    if (behindSq != null) targets.remove(behindSq);
+                if (t.equals(kingSq) && !t.getPiece().isKnight()) {
+                    Direction dir = Direction.from2Squares(esq, kingSq);
+                    Square behindSq = board.getSquareAt(kingSq.getX()+dir.getX(), kingSq.getY()+dir.getY());
+                    if (behindSq != null) {
+                        targets.remove(behindSq);
+                    }
+                    continue;
                 }
+                targets.remove(t);
             }
         }
         return targets;
