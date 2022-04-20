@@ -14,19 +14,14 @@ public class Main {
     };
 
     public static void main(String[] args){
+        GameUI gameUI = new GameUI("Chess");
+        gameUI.setSize(780, 760);
+
         Player player = new Player(Colour.WHITE);
         ChessAI chessAI = new ChessAI(Colour.BLACK);
 
-        Board board = new Board(null, player.getColor());
-        BoardUI boardUI = new BoardUI();
-
-        Game game = new Game(board, boardUI, player, chessAI);
+        Game game = new Game(gameUI, player, chessAI);
+        game.setBoardState(testBoard);
         game.start();
-
-        JFrame window = new JFrame("Chess");
-        window.getContentPane().add(boardUI.getMainPanel());
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setSize(850,800);
-        window.setVisible(true);
     }
 }

@@ -346,6 +346,9 @@ public class Board {
     }
 
     public void setState(final Integer[][] newState) {
+        blackPiecesSq.clear();
+        whitePiecesSq.clear();
+
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Square sq = new Square(PieceConverter.intToPiece(newState[x][y]), x, y);
