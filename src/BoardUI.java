@@ -24,7 +24,10 @@ public class BoardUI {
 
     public BoardUI() {
         mainPanel = new JPanel(new BorderLayout());
-        centerPanel = new JPanel(new GridLayout(8, 8));
+
+        centerPanel = new JPanel(new GridLayout(8, 8, 1, 1));
+        centerPanel.setBackground(Color.BLACK);
+
         southPanel = new JPanel(new GridLayout(0, 8));
         westPanel = new JPanel(new GridLayout(8, 0));
 
@@ -150,7 +153,7 @@ public class BoardUI {
                 int z = playerIsBlack ? 7-x : x;
                 JLabel lab = boardSquares[z][y];
                 lab.setOpaque(true);
-                lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                //lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
                 if ((z + y) % 2 == 0) {
                     lab.setBackground(whiteSqColor);
