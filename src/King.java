@@ -22,19 +22,18 @@ public class King extends Piece {
         boolean w = getColor().bool();
         for (Square esq : board.getEnemyPiecesSq()) {
             Piece enemy = esq.getPiece();
-            List<Square> enemyTargets = enemy.getValidTargets(board, esq);
             if (enemy.isPawn()) {
-                enemyTargets.removeIf(dst -> Direction.from2Squares(esq, dst).isDirect());
-                enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()-1));
-                enemyTargets.add(board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()+1));
-                enemyTargets.forEach(t -> {
-                    if (t != null) {
-                        targets.remove(t);
-                    }
-                });
+                Square diagLeft = board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()-1);
+                Square diagRight = board.getSquareAt(w ? esq.getX()+1 : esq.getX()-1, esq.getY()+1);
+                if (diagLeft != null) {
+                    targets.remove(diagLeft);
+                }
+                if (diagRight != null) {
+                    targets.remove(diagRight);
+                }
                 continue;
             }
-            for (Square t : enemyTargets) {
+            for (Square t : enemy.getValidTargets(board, esq)) {
                 if (t.equals(kingSq) && !t.getPiece().isKnight()) {
                     Direction dir = Direction.from2Squares(esq, kingSq);
                     Square behindSq = board.getSquareAt(kingSq.getX()+dir.getX(), kingSq.getY()+dir.getY());
