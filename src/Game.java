@@ -42,6 +42,7 @@ public class Game {
                 }
         );
         // show main window
+        gameUI.setResizable(false);
         gameUI.show();
     }
 

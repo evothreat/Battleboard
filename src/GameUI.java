@@ -23,15 +23,18 @@ public class GameUI {
         window.setSize(w, h);
     }
 
-    public void show() {
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.getContentPane().add(boardUI.getMainPanel());
-        window.setResizable(false);                             // export to method?
-        window.setVisible(true);
+    public void setResizable(boolean value) {
+        window.setResizable(value);
     }
 
     public void showInfoDialog(String title, String msg, String filename) {
         JOptionPane.showMessageDialog(window, msg, title, JOptionPane.INFORMATION_MESSAGE,
                                       filename != null ? new ImageIcon(filename) : null);
+    }
+
+    public void show() {
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.getContentPane().add(boardUI.getMainPanel());
+        window.setVisible(true);
     }
 }
