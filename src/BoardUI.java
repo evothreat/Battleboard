@@ -26,6 +26,7 @@ public class BoardUI {
         mainPanel = new JPanel(new BorderLayout());
 
         centerPanel = new JPanel(new GridLayout(8, 8, 1, 1));
+        centerPanel.setPreferredSize(new Dimension(736, 736));
         centerPanel.setBackground(Color.BLACK);
 
         southPanel = new JPanel(new GridLayout(0, 8));

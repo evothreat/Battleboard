@@ -35,6 +35,7 @@ public class GameUI {
     public void show() {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.getContentPane().add(boardUI.getMainPanel());
+        window.pack();
         window.setVisible(true);
     }
 }
