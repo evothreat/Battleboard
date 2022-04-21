@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String[] args){
         GameUI gameUI = new GameUI("Chess");
-        gameUI.setSize(780, 760);
+        gameUI.setSize(766, 766);
 
         Player player = new Player(Colour.WHITE);
         ChessAI chessAI = new ChessAI(Colour.BLACK);
